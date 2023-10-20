@@ -1,6 +1,6 @@
 {
   "watch": ["src"],
-  "ext": ".ts,.js",
+  "ext": ".ts,.js,.tsx",
   "ignore": [],
-  "exec": "bun ./src/index.ts"
+  "exec": "bun ./src/app.ts"
 }
