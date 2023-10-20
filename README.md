@@ -1,15 +1,12 @@
-# Elysia with Bun runtime
+# How to run the project?
 
-## Getting Started
-To get started with this template, simply paste this command into your terminal:
-```bash
-bun create elysia ./elysia-example
+Open two terminals and leave the following commands running in each one:
+
+```
+# On terminal 1
+bun assets
+# On terminal 2
+bun start
 ```
 
-## Development
-To start the development server run:
-```bash
-bun run dev
-```
-
-Open http://localhost:3000/ with your browser to see the result.
+That will run watcherer that compile assets as file change and a watcher that reload app code as files change.
