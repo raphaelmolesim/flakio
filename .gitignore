@@ -12,6 +12,10 @@
 /.next/
 /out/
 
+# tailwind generated file
+/dist/output.css
+dist/output.css
+
 # production
 /build
 
