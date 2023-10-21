@@ -7,7 +7,7 @@ export function FlakioLogo({ size }) {
   const height = iconSize[0]
   const width = iconSize[1]
   return (
-    <svg width={width} height={height} viewBox="0 0 370.00000000000006 100.21051507247121" class="css-1j8o68f">
+    <svg width={width} height={height} viewBox="0 0 370.00000000000006 100.21051507247121" className="css-1j8o68f">
       <defs id="SvgjsDefs1543"></defs>
       <g id="SvgjsG1544" featurekey="symbolFeature-0" transform="matrix(1.0526315789473684,0,0,1.0526315789473684,-2.631578947368421,-2.6315794493022717)" fill="#5782bb">
         <switch xmlns="http://www.w3.org/2000/svg">

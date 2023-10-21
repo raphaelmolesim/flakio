@@ -1,6 +1,6 @@
 import { Elysia, t } from "elysia";
 import { html } from '@elysiajs/html'
-import { Home } from './home.tsx'
+import { Home } from './views/home.js'
 import { staticPlugin } from '@elysiajs/static'
 
 import { CredentialsDatabase } from './db/credentials.ts'
