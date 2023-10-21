@@ -16,6 +16,10 @@
 /dist/output.css
 dist/output.css
 
+# sqlite files
+db/*.db
+*.db
+
 # production
 /build
 
