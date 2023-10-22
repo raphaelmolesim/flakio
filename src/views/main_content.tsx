@@ -39,7 +39,7 @@ export function MainContent() {
     <div className="pt-6 px-4">
       <article className="border p-6 bg-white rounded">
         <Header text='Welcome to Flakio!' />
-        <Alert kind='info' title="No credential has been set!" primaryAction="Configure" primaryActionOnClick={showCredentialConfigPage} className={hasCredentials ? 'hidden' : ''}>
+        <Alert kind='warning' title="No credential has been set!" primaryAction="Configure" primaryActionOnClick={showCredentialConfigPage} className={hasCredentials ? 'hidden' : ''}>
           In order to download data from GitLab account, you need to set your credentials.
         </Alert>
         <PrimaryButton text="Donwload newer data" onClick={downloadData} disabled={!hasCredentials}></PrimaryButton>
