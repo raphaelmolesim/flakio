@@ -6,19 +6,20 @@ import { Alert } from './alert.tsx'
 import { useEffect, useState } from 'react';
 import { CredentialsPage } from './credentials_page.tsx';
 import { isEmpty, goToPage } from '../utils.ts';
-
+import { useNavigate } from 'react-router-dom';
 
 function downloadData() {
   console.log('Call to download data.')
 }
 
-function showCredentialConfigPage() {
-  console.log('--> Credential Config Page')
-  goToPage(<CredentialsPage />)
-}
-
 export function Home() {
-  const [hasCredentials, setHasCredentials] = useState(null);  
+  const [hasCredentials, setHasCredentials] = useState(null);
+  const navigate = useNavigate()
+
+  function showCredentialConfigPage() {
+    console.log('--> Credential Config Page')
+    navigate("/credentials/setup")
+  }
 
   useEffect(() => {
     console.log('Loading main page.')
