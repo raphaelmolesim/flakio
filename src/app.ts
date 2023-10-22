@@ -17,7 +17,7 @@ const app = new Elysia()
       assets : "./dist"
     }))
     .get('/', () => (
-        Home()
+      Bun.file('./dist/home.html')
     ))
     .get('/credentials', credentialsIndex)
     .post('/credentials', credentialsCreate)
