@@ -15,6 +15,7 @@
 # tailwind generated file
 /dist/output.css
 dist/output.css
+dist/root.js
 
 # sqlite files
 db/*.db

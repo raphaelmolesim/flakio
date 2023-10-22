@@ -1,8 +1,26 @@
 import { PrimaryButton, Header } from './basic_elements.js'
-import { CredentialsDatabase } from '../db/credentials.js'
+import { API } from './api.ts'
+
+function isEmpty(element) {
+  if (element === undefined || element === null || element.length === 0)
+    return true
+  else
+    return false
+}
 
 function downloadData() {
-  alert('Call to download data.')  
+  console.log('Call to download data.')
+  const api = new API()
+  api.fetchCredentials((credentials) => {
+    if (isEmpty(credentials))
+    showMissingCredentialsAlert()
+  else
+  console.log('Has credentials.', credentials)
+})
+}
+
+function showMissingCredentialsAlert() {
+  console.log('No credentials.')
 }
 
 export function MainContent() {
