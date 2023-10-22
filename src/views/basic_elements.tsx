@@ -6,18 +6,18 @@ export function Header({text}) {
   )
 }
 
-export function PrimaryButton({text, onClick}) {
-
+export function PrimaryButton({text, onClick, disabled=false}) {
   function handleClick(e) {
     console.log('Generic click handler.')
     onClick()
   }
+  const disabledClasses = "bg-blue-400 cursor-not-allowed"
+  const enabledClasses = "bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-200"
+  const statusClasses = disabled ? disabledClasses : enabledClasses
 
   return (
-
-    <button type="submit" className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-blue-800" onClick={handleClick}>
-        { text }
+    <button type="submit" className={`inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white rounded-lg ${statusClasses}`} disabled={disabled} onClick={handleClick}>
+      { text }
     </button>
-
   )
 }
