@@ -5,7 +5,7 @@ import { API } from './api.ts'
 import { Alert } from './alert.tsx'
 import { useEffect, useState } from 'react';
 import { CredentialsPage } from './credentials_page.tsx';
-import { isEmpty, goToPage } from '../utils.ts';
+import { isEmpty } from '../utils.ts';
 import { useNavigate } from 'react-router-dom';
 
 function downloadData() {
