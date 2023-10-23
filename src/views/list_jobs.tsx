@@ -55,7 +55,7 @@ export function ListJobs({ jobs }) {
                       Job Name
                   </th>
                   <th scope="col" className="px-6 py-3">
-                      Stauts
+                      Status
                   </th>
                   <th scope="col" className="px-6 py-3">
                       Merge Request

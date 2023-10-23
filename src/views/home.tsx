@@ -9,20 +9,31 @@ import { isEmpty } from '../utils.ts';
 import { useNavigate } from 'react-router-dom';
 import { getEventListeners } from 'events'
 import { ListJobs } from './list_jobs.tsx';
+import { Modal } from './modal.js'
 
 export function Home() {
-  const [credential, setCredential] = useState(null);
+  const [credential, setCredential] = useState('none');
   const navigate = useNavigate()
   const [jobs, setJobs] = useState([]);
   let hasCredentials = (credential != null)
+  const [showModal, setShowModal] = useState(false)
   
   function downloadData() {
     console.log('Call to download data.')
-    const gitLabAPI = new GitLabAPI()
-    gitLabAPI.fetchJobs(credential, (jobs) => {
-      console.log('Jobs', jobs)
-      setJobs(jobs)
-    })
+    //const gitLabAPI = new GitLabAPI()
+    //gitLabAPI.fetchJobs(credential, (jobs) => {
+    //  console.log('Jobs', jobs)
+    //  setJobs(jobs)
+    //})
+  }
+
+  function showLongProcessMessage() {
+    //const gitLabAPI = new GitLabAPI()
+    //gitLabAPI.fetchJobs(credential, (jobs) => {
+    //  console.log('Jobs', jobs)
+    //  setJobs(jobs)
+    //})
+    setShowModal(true)
   }
 
   function showCredentialConfigPage() {
@@ -53,9 +64,11 @@ export function Home() {
         </Alert>
 
         <ListJobs jobs={jobs} />
+        <PrimaryButton text="Donwload newer data" onClick={showLongProcessMessage} disabled={!hasCredentials}></PrimaryButton>
 
-        <PrimaryButton text="Donwload newer data" onClick={downloadData} disabled={!hasCredentials}></PrimaryButton>
       </MainContent>
+      <Modal title="Are you sure?" message="In order to download the data this action may take a long time to process" stateManagement={[showModal, setShowModal]} confirmationCallback={downloadData}/>
+
     </LayoutPage>
   )
 }

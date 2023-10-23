@@ -9,7 +9,6 @@ export function Header({text}) {
 export function PrimaryButton({text, onClick, disabled=false, size = "md" }) {
   function handleClick(e) {
     e.preventDefault()
-    console.log('Generic click handler.')
     onClick()
   }
   const disabledClasses = "bg-blue-400 cursor-not-allowed"
