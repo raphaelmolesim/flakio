@@ -10,6 +10,8 @@ import {
   credentialsDestroy, 
   credentialsUpdate } from './credentials_controller.ts'
 
+import { GitLabService } from './gitlab_service.ts'
+
 const app = new Elysia()
     .decorate("credentialsDb", () => new CredentialsDatabase())
     .use(html())
@@ -23,6 +25,12 @@ const app = new Elysia()
     .post('/credentials', credentialsCreate)
     .delete('/credentials/:id', credentialsDestroy)
     .put('/credentials/:id', credentialsUpdate)
+    .get('/jobs', (ctx) => {
+      const { projectId, apiUrl, privateToken } = ctx.query
+      console.log('🦊 Fetching jobs for in: ', projectId, apiUrl, privateToken)
+      const gitlabService = new GitLabService(projectId, apiUrl, privateToken)
+      return gitlabService.getJobs();
+    })
     .listen(3000)
 
 console.log(

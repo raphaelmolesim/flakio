@@ -46,3 +46,29 @@ export class API {
   }
 
 }
+
+
+export class GitLabAPI {
+
+  async fetchJobs(credential, callback) {
+    fetch('/jobs?' + new URLSearchParams({
+      projectId: credential.projectId,
+      apiUrl: credential.apiUrl,
+      privateToken: credential.privateToken
+    }),{
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((response) => {
+      console.log('API: Fetched jobs', response)
+      response.json().then((json) => {
+        console.log('API: Fetched jobs json', json)
+        callback(json)
+      })
+    }).catch((error) => {
+      console.log('Error fetching jobs.', error)
+    })
+  }
+
+
+}
