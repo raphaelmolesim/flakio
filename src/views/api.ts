@@ -50,11 +50,13 @@ export class API {
 
 export class GitLabAPI {
 
-  async fetchJobs(credential, callback) {
+  async fetchJobs(credential, callback, page=0) {
+    console.log('API: Fetching for page', page)
     fetch('/jobs?' + new URLSearchParams({
       projectId: credential.projectId,
       apiUrl: credential.apiUrl,
-      privateToken: credential.privateToken
+      privateToken: credential.privateToken,
+      page: page
     }),{
       headers: {
         'Content-Type': 'application/json'

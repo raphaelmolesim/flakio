@@ -12,27 +12,17 @@ import { ListJobs } from './list_jobs.tsx';
 import { Modal } from './modal.js'
 
 export function Home() {
-  const [credential, setCredential] = useState('none');
+  const [credential, setCredential] = useState('none')
   const navigate = useNavigate()
-  const [jobs, setJobs] = useState([]);
   let hasCredentials = (credential != null)
   const [showModal, setShowModal] = useState(false)
   
   function downloadData() {
     console.log('Call to download data.')
-    //const gitLabAPI = new GitLabAPI()
-    //gitLabAPI.fetchJobs(credential, (jobs) => {
-    //  console.log('Jobs', jobs)
-    //  setJobs(jobs)
-    //})
+    navigate("/download")
   }
 
   function showLongProcessMessage() {
-    //const gitLabAPI = new GitLabAPI()
-    //gitLabAPI.fetchJobs(credential, (jobs) => {
-    //  console.log('Jobs', jobs)
-    //  setJobs(jobs)
-    //})
     setShowModal(true)
   }
 
@@ -62,8 +52,6 @@ export function Home() {
         <Alert kind='warning' title="No credential has been set!" primaryAction="Configure" primaryActionOnClick={showCredentialConfigPage} className={hasCredentials ? 'hidden' : ''}>
           In order to download data from GitLab account, you need to set your credentials.
         </Alert>
-
-        <ListJobs jobs={jobs} />
         <PrimaryButton text="Donwload newer data" onClick={showLongProcessMessage} disabled={!hasCredentials}></PrimaryButton>
 
       </MainContent>

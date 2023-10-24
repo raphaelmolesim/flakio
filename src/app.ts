@@ -26,10 +26,10 @@ const app = new Elysia()
     .delete('/credentials/:id', credentialsDestroy)
     .put('/credentials/:id', credentialsUpdate)
     .get('/jobs', (ctx) => {
-      const { projectId, apiUrl, privateToken } = ctx.query
+      const { projectId, apiUrl, privateToken, page } = ctx.query
       console.log('🦊 Fetching jobs for in: ', projectId, apiUrl, privateToken)
       const gitlabService = new GitLabService(projectId, apiUrl, privateToken)
-      return gitlabService.getJobs();
+      return gitlabService.getJobs(page);
     })
     .listen(3000)
 
