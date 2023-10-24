@@ -8,12 +8,12 @@ import { SyncTable } from "./sync_table"
 export function DownloadPage() {
   const [jobs, setJobs] = useState([]);
   const [countFetchedPages, setCountFetchedPages] = useState(0);
+  const [selectedJobs, setSelectedJobs] = useState([]);
   const maxNumberOfPages = 1
-
   const isLoadingData = countFetchedPages < maxNumberOfPages
 
   function handleSynchronizeClick() {
-    console.log('Synchronizing...')
+    console.log('Synchronizing...', selectedJobs)
   }
 
   useEffect(() => {
@@ -53,11 +53,12 @@ export function DownloadPage() {
           </div>
           <div className={!isLoadingData ? '' : 'hidden'}>
             <Header text='Jobs avaliable to sync' />
-            <SyncTable jobs={jobs} visible={!isLoadingData} />
-            <PrimaryButton text="Synchronize" onClick={handleSynchronizeClick}></PrimaryButton>
+            <SyncTable jobs={jobs} visible={!isLoadingData} selectedJobsState={[selectedJobs, setSelectedJobs]} />
+            <div className="flex justify-end">
+              <PrimaryButton text="Synchronize" onClick={handleSynchronizeClick}></PrimaryButton>
+            </div>
           </div>
-          
-        </MainContent>        
+        </MainContent>
       </LayoutPage>
     )
 }

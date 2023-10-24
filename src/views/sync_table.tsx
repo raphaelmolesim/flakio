@@ -1,13 +1,21 @@
+import { useState } from 'react';
 
-export function SyncTable({jobs, visible}) {
+export function SyncTable({jobs, visible, selectedJobsState}) {
+  const [selectedJobs, setSelectedJobs] = selectedJobsState
+
+  function toogleJob(e) {
+    const el = e.target
+    if (el.checked)
+      setSelectedJobs([...selectedJobs, el.value])
+    else
+      setSelectedJobs(selectedJobs.filter((job) => job != el.value))
+  }
 
   function rows() {
 
     if (!visible) return null;
 
-    const groupedByName = Object.groupBy(jobs, (job) => job.name) 
-    console.log('(SyncTable) groupedByName', groupedByName)
-    console.log('(SyncTable) groupedByName.keys', Object.keys(groupedByName))
+    const groupedByName = Object.groupBy(jobs, (job) => job.name)
 
     return Object.keys(groupedByName).map(jobName => {
       return (
@@ -22,7 +30,7 @@ export function SyncTable({jobs, visible}) {
             {groupedByName[jobName].length}
           </td>
           <td className="px-6 py-4">
-            <input type="checkbox" name="sync[]" value={jobName}></input>
+            <input type="checkbox" name="sync[]" value={jobName} onChange={toogleJob}></input>
           </td>
       </tr>
       )

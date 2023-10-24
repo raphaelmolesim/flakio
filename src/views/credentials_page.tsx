@@ -61,7 +61,7 @@ export function CredentialsPage() {
   useEffect(() => {
     if (isEmpty(credential))
       return
-    console.log('Updatind fields with credential', credential)
+    console.log('Loading credentials into the fields', credential)
     document.getElementById('project-id').value = credential.projectId
     document.getElementById('api-url').value = credential.apiUrl
     document.getElementById('private-token').value = credential.privateToken
