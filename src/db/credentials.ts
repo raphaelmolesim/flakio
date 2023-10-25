@@ -21,7 +21,7 @@ export class CredentialsDatabase {
   }
 
   create(credentials: Crendetials) {
-    return this.db.query(`INSERT INTO credentials (project_id, api_url, private_token) VALUES (?, ?, ?) RETURNING id`).get(credentials.project_id, credentials.api_url, credentials.private_token) as Book;
+    return this.db.query(`INSERT INTO credentials (project_id, api_url, private_token) VALUES (?, ?, ?) RETURNING id`).get(credentials.project_id, credentials.api_url, credentials.private_token) as Credentials;
   }
 
   destroy(id: number) {
