@@ -35,19 +35,104 @@ export const syncJobs = async ({ jobsDb, body }) => {
   }
 }
 
+export const getGitLabJobs = (ctx) => {
+  const { projectId, apiUrl, privateToken, page } = ctx.query
+  console.log('[JobsController] Fetching jobs with credentials: ', projectId, apiUrl, privateToken)
+  const gitlabService = new GitLabService(projectId, apiUrl, privateToken)
+  return gitlabService.getFinishedJobs(page);
+}
 
-export const indexJobs = ({ jobsDb, body }) => {
-
-  const jobs = jobsDb().all()
+export const getGitLabFailedTests = async (ctx) => {
+  const id = ctx.params.id
+  const { projectId, apiUrl, privateToken } = ctx.query
+  console.log('[JobsController] Fetching log trace with credentials: ', projectId, apiUrl, privateToken)
+  const gitlabService = new GitLabService(projectId, apiUrl, privateToken)
+  const logTrace = await gitlabService.getJobTrace(id);
   
+  const matches = getTextBetween(logTrace, 'Failed examples:', 'Randomized with seed') 
+  console.log(`[JobsController] Found ${matches.length} Matches`)
+
+  const seed = /Randomized with seed ([0-9]+)\W/.exec(logTrace)[1]
+  
+  const failedTest = matches.map((match) => {
+    if (match.includes('rspec ./spec')) {
+      const [line, testName] = match.split('#')
+      return {
+        line: line.trim(),
+        testName: testName.trim(),
+        jobId: id,
+        seed: seed
+      }
+    }
+    return null
+  }).filter(m => m != null)
+  
+  const errorMessagesCrop = getTextBetween(logTrace, 'Failures:', 'Finished in').join('\n')
+  failedTest.map((test) => {
+    const errorMessages = getErrorMessage(errorMessagesCrop, test.testName)
+    test.errorMessages = errorMessages
+  })
+
+  console.log(`[JobsController] Found ${failedTest.length} tests`)
+
   return {
-    jobs
+    failedTests: failedTest
   }
 }
 
-export const getGitLabJobs = (ctx) => {
-  const { projectId, apiUrl, privateToken, page } = ctx.query
-  console.log('🦊 Fetching jobs for in: ', projectId, apiUrl, privateToken)
-  const gitlabService = new GitLabService(projectId, apiUrl, privateToken)
-  return gitlabService.getJobs(page);
+function getTextBetween(str, start, end) {
+  if (str === null || str === undefined) throw new Error('Wrong string is ', str)
+
+  const lines = str.split('\n')
+
+  let selectLine = false
+  const matches = []
+
+  lines.forEach((line) => {
+    if (line.includes(start)) {
+      selectLine = true
+    }
+
+    if (line.includes(end)) {
+      selectLine = false
+    }
+
+    if (selectLine) {
+      matches.push(line)
+    }
+  })
+
+  return matches
+}
+
+function getErrorMessage(str, testName) {
+  const lines = str.split('\n')
+
+  let selectLine = false
+  let matches = []
+  let countHash = 0
+  const returningArray = []  
+
+  lines.forEach((line) => {
+    if (line.includes(testName)) {
+      selectLine = true
+    }
+
+    if (line.includes('#') && selectLine) {
+      countHash += 1
+      if (countHash > 3) {
+        countHash = 0
+        selectLine = false
+        returningArray.push(matches.join('\n'))
+        matches = []
+      }
+    }
+    
+
+    if (selectLine) {
+      matches.push(line)
+    }
+  })
+
+  return returningArray
 }

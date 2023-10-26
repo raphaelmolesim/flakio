@@ -10,7 +10,7 @@ import {
   credentialsCreate, 
   credentialsDestroy, 
   credentialsUpdate } from './controllers/credentials_controller.js'
-import { getGitLabJobs, syncJobs } from './controllers/jobs_controller.js'
+import { getGitLabJobs, syncJobs, getGitLabFailedTests } from './controllers/jobs_controller.js'
 
 const app = new Elysia()
     .decorate("credentialsDb", () => new CredentialsDatabase())
@@ -27,6 +27,7 @@ const app = new Elysia()
     .delete('/credentials/:id', credentialsDestroy)
     .put('/credentials/:id', credentialsUpdate)
     .get('/jobs', getGitLabJobs)
+    .get('/jobs/:id/failed-tests', getGitLabFailedTests)
     .post('/sync-jobs', syncJobs)
     .listen(3000)
 
