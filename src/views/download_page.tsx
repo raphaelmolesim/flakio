@@ -14,6 +14,32 @@ export function DownloadPage() {
 
   function handleSynchronizeClick() {
     console.log('Synchronizing...', selectedJobs)
+    const jobData = jobs.filter((job) => {
+      return selectedJobs.includes(job.name)
+    }).map((job) => {
+      return {
+        jobId: job.id,
+        name: job.name,
+        status: job.status,
+        finishedAt: job.finished_at,
+        ref: job.ref,
+        authorName: job.user.name,
+        authorAvatarUrl: job.user.avatar_url,
+        pipelineId: job.pipeline.id,
+        pipelineUrl: job.pipeline.web_url,
+        duration: job.duration,
+        queueDuration: job.queued_duration,
+        coverage: job.coverage
+      }
+    })
+
+    console.log('Job data: ', jobData)
+
+    const api = new API()
+
+    api.syncJobs(jobData, (response) => {
+      console.log('Synced jobs.', response)
+    })
   }
 
   useEffect(() => {

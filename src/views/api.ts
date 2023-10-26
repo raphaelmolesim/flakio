@@ -45,6 +45,23 @@ export class API {
     })
   }
 
+  async syncJobs(jobs, callback) {
+    fetch('/sync-jobs', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        jobs: jobs
+      })
+    }).then((response) => {
+      response.json().then((json) => {
+        callback(json.jobIds)
+      })
+    }).catch((error) => {
+      console.log('Error syncing jobs.', error)
+    })
+  }
 }
 
 

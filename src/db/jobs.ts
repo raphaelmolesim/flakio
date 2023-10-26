@@ -45,6 +45,13 @@ export class JobsDatabase {
     return this.database().then((db) => db.query('SELECT * FROM jobs').all());
   }
 
+  async find(id) {
+    return await this.database().then((db) => {
+      return db.query('SELECT * FROM jobs WHERE job_id = $job_id')
+      .all({ $job_id: id })[0]
+    })
+  }
+
   async create(job: Job) {
     console.log('🦊 Creating job', job)
     const status = statusEnum[job.status]
