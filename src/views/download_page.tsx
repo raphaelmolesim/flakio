@@ -4,16 +4,24 @@ import { Header, PrimaryButton } from "./basic_elements"
 import { useEffect, useState } from "react"
 import { API, GitLabAPI } from "./api"
 import { SyncTable } from "./sync_table"
+import { credentialsCreate } from "../controllers/credentials_controller"
 
 export function DownloadPage() {
   const [jobs, setJobs] = useState([]);
   const [countFetchedPages, setCountFetchedPages] = useState(0);
   const [selectedJobs, setSelectedJobs] = useState([]);
-  const maxNumberOfPages = 1
-  const isLoadingData = countFetchedPages < maxNumberOfPages
+  const [tests, setTests] = useState([]);
+  const [credential, setCredential] = useState(null);
+  const [showLoadingPage, setShowLoadingPage] = useState(true)
+  const [showSyncTable, setShowSyncTable] = useState(false)
+  const [showSyncedPage, setShowSyncedPage] = useState(false)
+  const maxNumberOfPages = 5
 
   function handleSynchronizeClick() {
-    console.log('Synchronizing...', selectedJobs)
+    setShowSyncTable(false)
+    setShowLoadingPage(true)
+
+    console.log('Synchronizing...', selectedJobs)    
     const jobData = jobs.filter((job) => {
       return selectedJobs.includes(job.name)
     }).map((job) => {
@@ -34,37 +42,63 @@ export function DownloadPage() {
     })
 
     console.log('Job data: ', jobData)
-
     const api = new API()
-
-    api.syncJobs(jobData, (response) => {
+    
+    api.syncJobs(jobData, async (response) => {
       console.log('Synced jobs.', response)
+      
+      const fetchedTests = []
+
+      // TODO: Execute promises in sequence
+      const promises = jobData.map(async (job) => {
+        const jobId = job.jobId
+        const gitLabApi = new GitLabAPI(credential)
+        const result = await gitLabApi.syncFetchFailedTests(jobId)
+        console.log('Result: ', result)
+        fetchedTests.push(result)
+        const joinedTests = [ ...tests, ...result ]
+        setTests(joinedTests)
+        return result
+      })
+      
+      console.log('Promisses: ', promises)
+      await Promise.all(promises)      
+      
+      console.log('All tests fetched: ', fetchedTests)
+      setTests(fetchedTests)
+      setShowSyncedPage(true)
+      setShowLoadingPage(false)
+
     })
   }
 
   useEffect(() => {
     console.log('Loading jobs: ', countFetchedPages)
-    if (countFetchedPages >= maxNumberOfPages) return
+    if (countFetchedPages >= maxNumberOfPages) {
+      setShowLoadingPage(false)
+      setShowSyncTable(true)
+      return
+    }
 
     const api = new API()
     api.fetchCredentials((credentials) => {
-      credential = credentials[0]
-      const gitLabAPI = new GitLabAPI()
-      gitLabAPI.fetchJobs(credential, (newJobs) => {
+      setCredential(credentials[0])
+      const gitLabApi = new GitLabAPI(credentials[0])
+      gitLabApi.fetchJobs(credentials[0], (newJobs) => {
         const joinedJobs = [ ...jobs, ...newJobs ]
         console.log('DownloadPage Joined Jobs', joinedJobs)
         setJobs(joinedJobs)
-        setCountFetchedPages(countFetchedPages + 1)
+        setCountFetchedPages(countFetchedPages + 1)        
       }, countFetchedPages + 1)
     })
-  }, [countFetchedPages])
 
+  }, [countFetchedPages])
   
     return (
       <LayoutPage>
         <MainContent>
-          <div className={isLoadingData ? '' : 'hidden'}>
-            <Header text='Downloading jobs data' />
+          <div className={showLoadingPage ? '' : 'hidden'}>
+            <Header text='Downloading data' />
             
             <div role="status">
               <svg aria-hidden="true" className="inline w-10 h-10 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -76,13 +110,20 @@ export function DownloadPage() {
 
             <h2>Fetched Pages: {countFetchedPages}</h2>
             <h2>Number Of Jobs: {jobs.length}</h2>
+            <h2>Test: {(tests || []).length}</h2>
           </div>
-          <div className={!isLoadingData ? '' : 'hidden'}>
+          <div className={showSyncTable ? '' : 'hidden'}>
             <Header text='Jobs avaliable to sync' />
-            <SyncTable jobs={jobs} visible={!isLoadingData} selectedJobsState={[selectedJobs, setSelectedJobs]} />
+            <SyncTable jobs={jobs} visible={showSyncTable} selectedJobsState={[selectedJobs, setSelectedJobs]} />
             <div className="flex justify-end">
               <PrimaryButton text="Synchronize" onClick={handleSynchronizeClick}></PrimaryButton>
             </div>
+          </div>
+          <div className={showSyncedPage ? '' : 'hidden'}>
+            <Header text='Successfully downloaded Tests' />
+            <p>
+              Click here to see the report
+            </p>
           </div>
         </MainContent>
       </LayoutPage>

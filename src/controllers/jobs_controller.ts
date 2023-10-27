@@ -52,7 +52,10 @@ export const getGitLabFailedTests = async (ctx) => {
   const matches = getTextBetween(logTrace, 'Failed examples:', 'Randomized with seed') 
   console.log(`[JobsController] Found ${matches.length} Matches`)
 
-  const seed = /Randomized with seed ([0-9]+)\W/.exec(logTrace)[1]
+  const seed = /Randomized with seed ([0-9]+)\W/.exec(logTrace)[1]  
+  
+  const overallStatus = /[0-9]+ examples?, [0-9]+ failures?(, [0-9]+ pending)?/.exec(logTrace)[0]  
+  //const overallStatus = overallStatusArray != null ? overallStatusArray[0] : "not found"
   
   const failedTest = matches.map((match) => {
     if (match.includes('rspec ./spec')) {
@@ -61,13 +64,18 @@ export const getGitLabFailedTests = async (ctx) => {
         line: line.trim(),
         testName: testName.trim(),
         jobId: id,
-        seed: seed
+        seed: seed,
       }
     }
     return null
   }).filter(m => m != null)
   
   const errorMessagesCrop = getTextBetween(logTrace, 'Failures:', 'Finished in').join('\n')
+
+  if (failedTest.length === 0) {
+    console.log(`[JobsController] No failed tests found`, logTrace)
+  }
+
   failedTest.map((test) => {
     const errorMessages = getErrorMessage(errorMessagesCrop, test.testName)
     test.errorMessages = errorMessages
@@ -76,7 +84,8 @@ export const getGitLabFailedTests = async (ctx) => {
   console.log(`[JobsController] Found ${failedTest.length} tests`)
 
   return {
-    failedTests: failedTest
+    failedTests: failedTest,
+    overallStatus: overallStatus
   }
 }
 

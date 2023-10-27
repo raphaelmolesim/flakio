@@ -62,10 +62,16 @@ export class API {
       console.log('Error syncing jobs.', error)
     })
   }
+
+  
 }
 
 
 export class GitLabAPI {
+
+  constructor(credential) {
+    this.credential = credential
+  }
 
   async fetchJobs(credential, callback, page=0) {
     console.log('API: Fetching for page', page)
@@ -89,5 +95,43 @@ export class GitLabAPI {
     })
   }
 
+  async fetchFailedTests(jobId, callback) {
+    console.log('API: Fetching for failed tests')
+    fetch(`/jobs/${jobId}/failed-tests?` + new URLSearchParams({
+      projectId: this.credential.projectId,
+      apiUrl: this.credential.apiUrl,
+      privateToken: this.credential.privateToken
+    }),{
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((response) => {
+      console.log('API: Fetched failed tests', response)
+      response.json().then((json) => {
+        console.log('API: Fetched test json', json)
+        callback(json)
+      })
+    }).catch((error) => {
+      console.log('Error fetching jobs.', error)
+    })
+  }
+
+  syncFetchFailedTests(jobId) {
+    console.log('API: Fetching for failed tests')
+    
+    return fetch(`/jobs/${jobId}/failed-tests?` + new URLSearchParams({
+      projectId: this.credential.projectId,
+      apiUrl: this.credential.apiUrl,
+      privateToken: this.credential.privateToken
+    }), {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((response) => {
+      return response.json()
+    }).catch((error) => {
+      console.log('Error fetching jobs.', error)
+    })
+  }
 
 }
