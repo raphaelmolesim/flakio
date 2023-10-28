@@ -49,8 +49,19 @@ export const getGitLabFailedTests = async (ctx) => {
   const gitlabService = new GitLabService(projectId, apiUrl, privateToken)
   const logTrace = await gitlabService.getJobTrace(id);
   
+  // Debugging purposes only
+  // console.log(`[JobsController] log trace`, logTrace)
+  
   const matches = getTextBetween(logTrace, 'Failed examples:', 'Randomized with seed') 
   console.log(`[JobsController] Found ${matches.length} Matches`)
+
+  if (matches.length === 0) {
+    console.log(`[JobsController] No failed tests found`, logTrace)
+    return {
+      failedTests: [],
+      overallStatus: 'No failed tests found'
+    }
+  }
 
   const seed = /Randomized with seed ([0-9]+)\W/.exec(logTrace)[1]  
   
@@ -72,9 +83,9 @@ export const getGitLabFailedTests = async (ctx) => {
   
   const errorMessagesCrop = getTextBetween(logTrace, 'Failures:', 'Finished in').join('\n')
 
-  if (failedTest.length === 0) {
-    console.log(`[JobsController] No failed tests found`, logTrace)
-  }
+  //if (failedTest.length === 0) {
+  //  console.log(`[JobsController] No failed tests found`, logTrace)
+  //}
 
   failedTest.map((test) => {
     const errorMessages = getErrorMessage(errorMessagesCrop, test.testName)

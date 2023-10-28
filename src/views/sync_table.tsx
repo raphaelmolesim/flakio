@@ -3,6 +3,13 @@ import { useState } from 'react';
 export function SyncTable({jobs, visible, selectedJobsState}) {
   const [selectedJobs, setSelectedJobs] = selectedJobsState
 
+  const preferredJobs = [
+    "flaky-tests",
+    "quarantine-tests",
+    "rspec-tests 2/2",
+    "rspec-tests 1/2"
+  ]
+
   function toogleJob(e) {
     const el = e.target
     if (el.checked)
@@ -30,7 +37,7 @@ export function SyncTable({jobs, visible, selectedJobsState}) {
             {groupedByName[jobName].length}
           </td>
           <td className="px-6 py-4">
-            <input type="checkbox" name="sync[]" value={jobName} onChange={toogleJob}></input>
+            <input type="checkbox" name="sync[]" value={jobName} onChange={toogleJob} checked={preferredJobs.includes(jobName)}></input>
           </td>
       </tr>
       )
