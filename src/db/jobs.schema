@@ -11,5 +11,7 @@ CREATE TABLE jobs (
   pipeline_url TEXT NOT NULL,
   duration REAL,
   queue_duration REAL,
-  coverage TEXT
+  coverage TEXT,
+  overall_testrun_status TEXT,
+  seed INTEGER
 );

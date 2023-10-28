@@ -1,0 +1,9 @@
+CREATE TABLE tests (
+  id INTEGER PRIMARY KEY,
+  line TEXT NOT NULL,
+  name TEXT NOT NULL,
+  error_messages_array TEXT,
+  job_id INTEGER NOT_NULL,
+  FOREIGN KEY(job_id) REFERENCES jobs(job_id)
+  UNIQUE(job_id, line)
+);

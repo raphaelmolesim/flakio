@@ -5,16 +5,19 @@ import { staticPlugin } from '@elysiajs/static'
 
 import { CredentialsDatabase } from './db/credentials.ts'
 import { JobsDatabase } from './db/jobs.ts'
+import { TestsDatabase } from './db/tests.ts'
 import { 
   credentialsIndex, 
   credentialsCreate, 
   credentialsDestroy, 
   credentialsUpdate } from './controllers/credentials_controller.js'
 import { getGitLabJobs, syncJobs, getGitLabFailedTests } from './controllers/jobs_controller.js'
+import { syncTests } from './controllers/tests_controller.js'
 
 const app = new Elysia()
     .decorate("credentialsDb", () => new CredentialsDatabase())
     .decorate("jobsDb", () => new JobsDatabase())
+    .decorate("testsDb", () => new TestsDatabase())
     .use(html())
     .use(staticPlugin({
       assets : "./dist"
@@ -29,6 +32,7 @@ const app = new Elysia()
     .get('/jobs', getGitLabJobs)
     .get('/jobs/:id/failed-tests', getGitLabFailedTests)
     .post('/sync-jobs', syncJobs)
+    .post('/sync-tests', syncTests)
     .listen(3000)
 
 console.log(
