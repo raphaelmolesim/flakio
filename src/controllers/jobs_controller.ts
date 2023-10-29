@@ -35,6 +35,24 @@ export const syncJobs = async ({ jobsDb, body }) => {
   }
 }
 
+export const updateTestRunData = async ({ jobsDb, body }) => {  
+  console.log('[JobsController] Updating Test Run Data in jobs')
+  const promises = body.jobs.map(async (job) => {
+    const existentJob = await jobsDb().find(job.jobId)
+    if (existentJob != null) {
+      console.log('[JobsController] Found Job', existentJob)
+      const id = await jobsDb().updateTestRunData(job.jobId, job.overallStatus, job.seed)
+      console.log('[JobsController] Updated Job', id)
+    } else {
+      throw new Error('Job not found with id: ' + job.jobId)
+    }
+  })
+  await Promise.all(promises)
+  return {
+    status: 'ok'
+  }
+}
+
 export const getGitLabJobs = (ctx) => {
   const { projectId, apiUrl, privateToken, page } = ctx.query
   console.log('[JobsController] Fetching jobs with credentials: ', projectId, apiUrl, privateToken)
@@ -60,7 +78,8 @@ export const getGitLabFailedTests = async (ctx) => {
     return {
       failedTests: [],
       seed: null,
-      overallStatus: 'No failed tests found'
+      overallStatus: null,
+      jobId: id
     }
   }
 
@@ -97,7 +116,8 @@ export const getGitLabFailedTests = async (ctx) => {
   return {
     failedTests: failedTest,
     overallStatus: overallStatus,
-    seed: seed
+    seed: seed,
+    jobId: id
   }
 }
 

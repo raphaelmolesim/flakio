@@ -80,6 +80,24 @@ export class API {
       console.log('Error syncing test.', error)
     })
   }
+
+  async updateJobWithTestRunData(jobs, callback) {
+    fetch('/jobs/update-test-run-data', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        jobs: jobs
+      })
+    }).then((response) => {
+      response.json().then((json) => {
+        callback(json)
+      })
+    }).catch((error) => {
+      console.log('Error syncing test.', error)
+    })
+  }
   
 }
 

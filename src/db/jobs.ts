@@ -88,4 +88,11 @@ export class JobsDatabase {
       ) as Job)
   }
 
+  async updateTestRunData(jobId, overallStatus, seed) {
+    console.log('🦊 Updating job', jobId, overallStatus, seed)
+    return await this.database().then((db) => db.query(`UPDATE jobs SET overall_testrun_status = ?, seed = ? WHERE job_id = ?`)
+      .run(overallStatus, seed, jobId))
+  }
+
+
 }

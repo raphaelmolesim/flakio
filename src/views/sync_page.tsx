@@ -51,6 +51,17 @@ export function SyncPage(prop) {
     console.log('---> Test data to sync: ', testData)
     await api.syncTests((testData), (response) => console.log('Synced tests with id: ', response))
     setSyncedTests(testData)
+
+    const testRunData = jobTestResult.map((jobTest) =>{
+      return {
+        jobId: jobTest.jobId,
+        overallStatus: jobTest.overallStatus,
+        seed: jobTest.seed,
+      }
+    }).flat().filter((testRun) => testRun.overallStatus != null)
+
+    console.log('---> Test run data to sync: ', testRunData)
+    await api.updateJobWithTestRunData((testRunData), (response) => console.log('Synced Test Run Data'))
   }
 
   useEffect(() => {

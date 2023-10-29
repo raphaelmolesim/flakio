@@ -5,7 +5,7 @@ export function LoadingPage({list, text, visible=false, maxValue=null}) {
   const showProgressBar = maxValue !== null
   const currentPercentage = showProgressBar ? (list.length / maxValue) * 100 : 0
 
-  console.log('Loading page: ', list, text, visible, maxValue, showProgressBar, currentPercentage)
+  //console.log('Loading page: ', list, text, visible, maxValue, showProgressBar, currentPercentage)
 
   return (
     <div className={visible ? '' : 'hidden'}>
