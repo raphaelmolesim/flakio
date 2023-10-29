@@ -14,6 +14,10 @@ import {
 import { getGitLabJobs, syncJobs, getGitLabFailedTests } from './controllers/jobs_controller.js'
 import { syncTests } from './controllers/tests_controller.js'
 
+
+new JobsDatabase().database()
+new TestsDatabase().database()
+
 const app = new Elysia()
     .decorate("credentialsDb", () => new CredentialsDatabase())
     .decorate("jobsDb", () => new JobsDatabase())

@@ -2,7 +2,7 @@ import { GitLabService } from '../gitlab_service.ts'
 
 export const syncJobs = async ({ jobsDb, body }) => {
   const newItems = []
-  console.log('[JobsController] Syncing jobs', body)
+  console.log('[JobsController] Syncing jobs')
   const promises = body.jobs.map(async (job) => {
     const existentJob = await jobsDb().find(job.jobId)
     if (existentJob != null) {
@@ -59,6 +59,7 @@ export const getGitLabFailedTests = async (ctx) => {
     console.log(`[JobsController] No failed tests found`, logTrace)
     return {
       failedTests: [],
+      seed: null,
       overallStatus: 'No failed tests found'
     }
   }
@@ -73,9 +74,8 @@ export const getGitLabFailedTests = async (ctx) => {
       const [line, testName] = match.split('#')
       return {
         line: line.trim(),
-        testName: testName.trim(),
-        jobId: id,
-        seed: seed,
+        name: testName.trim(),
+        jobId: id
       }
     }
     return null
@@ -96,7 +96,8 @@ export const getGitLabFailedTests = async (ctx) => {
 
   return {
     failedTests: failedTest,
-    overallStatus: overallStatus
+    overallStatus: overallStatus,
+    seed: seed
   }
 }
 

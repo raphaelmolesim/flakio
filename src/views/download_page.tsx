@@ -2,11 +2,10 @@ import { LayoutPage } from "./layout_page"
 import { MainContent } from "./main_content"
 import { Header, PrimaryButton } from "./basic_elements"
 import { useEffect, useState } from "react"
-import { API, GitLabAPI } from "./api"
-import { SyncTable } from "./sync_table"
-import { credentialsCreate } from "../controllers/credentials_controller"
-import { LoadingPage } from "./loading_page"
 import { useNavigate } from "react-router-dom"
+import { API, GitLabAPI } from "./api"
+import { JobsToSync } from "./jobs_to_sync_table"
+import { LoadingPage } from "./loading_page"
 
 export function DownloadPage() {
   const [credential, setCredential] = useState(null);
@@ -75,7 +74,7 @@ export function DownloadPage() {
 
           <div className={countFetchedPages === maxNumberOfPages ? '' : 'hidden'}>
             <Header text='Jobs avaliable to sync' />
-            <SyncTable jobs={jobs} visible={true} selectedJobsState={[selectedJobs, setSelectedJobs]} />
+            <JobsToSync jobs={jobs} visible={true} selectedJobsState={[selectedJobs, setSelectedJobs]} />
             <div className="flex justify-end">
               <PrimaryButton text="Synchronize" onClick={handleSynchronizeClick}></PrimaryButton>
             </div>

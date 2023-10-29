@@ -8,7 +8,7 @@ export const findOrCreateTable = async (db, tableName) => {
   } else {
     console.log(`[DataMapper]: table ${tableName} does not exists`)
     let schema = await Bun.file(`./src/db/${tableName}.schema`).text()    
-    console.log(`[DataMapper]: creating table ${tableName}`, schema)
+    console.log(`[DataMapper]: creating table ${tableName}:\n`, schema)
     const query = db.query(schema);
     const result = query.run();
     console.log(`[DataMapper]: table ${tableName} created`, result)

@@ -63,6 +63,23 @@ export class API {
     })
   }
 
+  async syncTests(tests, callback) {
+    fetch('/sync-tests', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        tests: tests
+      })
+    }).then((response) => {
+      response.json().then((json) => {
+        callback(json.testIds)
+      })
+    }).catch((error) => {
+      console.log('Error syncing test.', error)
+    })
+  }
   
 }
 

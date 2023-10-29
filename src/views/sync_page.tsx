@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom";
 import { API, GitLabAPI } from "./api"
 import { LoadingPage } from "./loading_page";
+import { SyncedTestTable } from "./synced_test_table"
 
 export function SyncPage(prop) {
   const [showSyncedPage, setShowSyncedPage] = useState(true)
@@ -12,18 +13,17 @@ export function SyncPage(prop) {
   const jobData = location.state.jobData
   const credential = location.state.credential
   const [jobTestData, setJobTestData] = useState([])
+  const [syncedTests, setSyncedTests] = useState([])
 
   async function syncTestData() {
     console.log('Job data: ', jobData)
-    const api = new API()
-  
+    
     const promises = jobData.map((job) => {
       const jobId = job.jobId
       const gitLabApi = new GitLabAPI(credential)
       return gitLabApi.syncFetchFailedTests(jobId)
     })
-
-    console.log('Promisses: ', promises)
+    
     const resolvePromisesSeq = async (tasks) => {
       const results = [];
       for (const task of tasks) {
@@ -33,14 +33,24 @@ export function SyncPage(prop) {
       }
       return results;
     };
+    
+    const jobTestResult = await resolvePromisesSeq(promises)    
+    console.log('Job test result: ', jobTestResult)
+    const api = new API()
 
-    const responses = await resolvePromisesSeq(promises);
-    console.log('Responses: ', responses)
-    //console.log('All tests fetched: ', fetchedTests)
-    //setTests(fetchedTests)
-    //loadingPageParams.visible = false
-    //setLoadingPageParams(loadingPageParams)
-    //setShowSyncedPage(true)
+    const testData = jobTestResult.map((jobTest) =>{
+      return jobTest.failedTests.map((failedTest) => {
+        return {
+          jobId: failedTest.jobId,
+          line: failedTest.line,
+          name: failedTest.name,
+          errorMessages: failedTest.errorMessages
+        }      
+      })
+    }).flat()
+    console.log('---> Test data to sync: ', testData)
+    await api.syncTests((testData), (response) => console.log('Synced tests with id: ', response))
+    setSyncedTests(testData)
   }
 
   useEffect(() => {
@@ -59,9 +69,7 @@ export function SyncPage(prop) {
 
         <div className={jobTestData.length === jobData.length ? '' : 'hidden'}>
           <Header text='Successfully downloaded Tests' success={true} />
-          <p>
-            Click here to see the report
-          </p>
+          <SyncedTestTable tests={syncedTests} jobs={jobData} visible={syncedTests.length > 0} />
         </div>
       </MainContent>
     </LayoutPage>

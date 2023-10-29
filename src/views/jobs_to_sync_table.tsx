@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export function SyncTable({jobs, visible, selectedJobsState}) {
+export function JobsToSync({jobs, visible, selectedJobsState}) {
   const [selectedJobs, setSelectedJobs] = selectedJobsState
 
   const preferredJobs = [
