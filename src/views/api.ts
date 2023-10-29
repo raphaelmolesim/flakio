@@ -98,7 +98,16 @@ export class API {
       console.log('Error syncing test.', error)
     })
   }
-  
+
+  async fetchPreferredJobs(callback) {
+    fetch('/preferred-jobs').then((response) => {
+      response.json().then((json) => {
+        callback(json)
+      })
+    }).catch((error) => {
+      console.log('Error fetching preferred jobs.', error)
+    })
+  }  
 }
 
 

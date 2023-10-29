@@ -11,7 +11,13 @@ import {
   credentialsCreate, 
   credentialsDestroy, 
   credentialsUpdate } from './controllers/credentials_controller.js'
-import { getGitLabJobs, syncJobs, getGitLabFailedTests, updateTestRunData } from './controllers/jobs_controller.js'
+import { 
+  getGitLabJobs, 
+  syncJobs, 
+  getGitLabFailedTests, 
+  updateTestRunData, 
+  getPreferredJobs 
+} from './controllers/jobs_controller.js'
 import { syncTests } from './controllers/tests_controller.js'
 
 
@@ -38,6 +44,7 @@ const app = new Elysia()
     .patch('/jobs/update-test-run-data', updateTestRunData)
     .post('/sync-jobs', syncJobs)
     .post('/sync-tests', syncTests)
+    .get('/preferred-jobs', getPreferredJobs)
     .listen(3000)
 
 console.log(

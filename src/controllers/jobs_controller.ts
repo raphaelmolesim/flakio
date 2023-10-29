@@ -53,6 +53,21 @@ export const updateTestRunData = async ({ jobsDb, body }) => {
   }
 }
 
+export const getPreferredJobs = async ({ jobsDb }) => {
+  console.log('[JobsController] Fetching preferred jobs')
+  const jobs = await jobsDb().all()
+  console.log('[JobsController] Found jobs', jobs)
+  //const groupedByName = Object.groupBy(jobs, (job) => job.name)
+  const groupedByName = jobs.reduce((hash, job) => {
+    hash[job.job_name] = hash[job.job_name] || []
+    hash[job.job_name].push(job)
+    return hash
+  }, {})
+  const preferredJobs = Object.keys(groupedByName)
+  console.log('[JobsController] Found preferred jobs', preferredJobs)
+  return preferredJobs
+}
+
 export const getGitLabJobs = (ctx) => {
   const { projectId, apiUrl, privateToken, page } = ctx.query
   console.log('[JobsController] Fetching jobs with credentials: ', projectId, apiUrl, privateToken)

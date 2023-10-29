@@ -1,14 +1,8 @@
 import { useState } from 'react';
+import { useEffect } from 'react';
 
-export function JobsToSync({jobs, visible, selectedJobsState}) {
+export function JobsToSync({jobs, visible, selectedJobsState, preferredJobs=null}) {
   const [selectedJobs, setSelectedJobs] = selectedJobsState
-
-  const preferredJobs = [
-    "flaky-tests",
-    "quarantine-tests",
-    "rspec-tests 2/2",
-    "rspec-tests 1/2"
-  ]
 
   function toogleJob(e) {
     const el = e.target
@@ -16,8 +10,16 @@ export function JobsToSync({jobs, visible, selectedJobsState}) {
       setSelectedJobs([...selectedJobs, el.value])
     else
       setSelectedJobs(selectedJobs.filter((job) => job != el.value))
-    console.log('Selected jobs: ', selectedJobs)
   }
+
+  useEffect(() => {
+    console.log('Settings selected job with preferred jobs ', preferredJobs)
+    setSelectedJobs(preferredJobs)
+  }, [preferredJobs])
+
+  useEffect(() => {
+    console.log('-> selectedJobs', selectedJobs)
+  }, [selectedJobs])
 
   function rows() {
 
@@ -38,7 +40,7 @@ export function JobsToSync({jobs, visible, selectedJobsState}) {
             {groupedByName[jobName].length}
           </td>
           <td className="px-6 py-4">
-            <input type="checkbox" name="sync[]" value={jobName} onChange={toogleJob} ></input>
+            <input type="checkbox" name="sync[]" value={jobName} onChange={toogleJob} checked={selectedJobs.includes(jobName)} ></input>
           </td>
       </tr>
       )

@@ -8,10 +8,11 @@ import { JobsToSync } from "./jobs_to_sync_table"
 import { LoadingPage } from "./loading_page"
 
 export function DownloadPage() {
-  const [credential, setCredential] = useState(null);
-  const [jobs, setJobs] = useState([]);
-  const [countFetchedPages, setCountFetchedPages] = useState(0);
-  const [selectedJobs, setSelectedJobs] = useState([]);
+  const [credential, setCredential] = useState(null)
+  const [jobs, setJobs] = useState([])
+  const [countFetchedPages, setCountFetchedPages] = useState(0)
+  const [selectedJobs, setSelectedJobs] = useState([])
+  const [preferredJobs, setPreferredJobs] = useState([])
   const maxNumberOfPages = 5
   const navigate = useNavigate()
 
@@ -43,9 +44,18 @@ export function DownloadPage() {
     })
   }
 
+  function loadPreferredJobs() {
+    const api = new API()
+    api.fetchPreferredJobs((preferredJobs) => {
+      console.log('Preferred jobs: ', preferredJobs)
+      setPreferredJobs(preferredJobs)
+    })
+  }
+
   useEffect(() => {
     console.log('Loading jobs: ', countFetchedPages)
     if (countFetchedPages >= maxNumberOfPages) {
+      loadPreferredJobs()
       return
     }
 
@@ -74,7 +84,7 @@ export function DownloadPage() {
 
           <div className={countFetchedPages === maxNumberOfPages ? '' : 'hidden'}>
             <Header text='Jobs avaliable to sync' />
-            <JobsToSync jobs={jobs} visible={true} selectedJobsState={[selectedJobs, setSelectedJobs]} />
+            <JobsToSync jobs={jobs} visible={true} selectedJobsState={[selectedJobs, setSelectedJobs]} preferredJobs={preferredJobs} />
             <div className="flex justify-end">
               <PrimaryButton text="Synchronize" onClick={handleSynchronizeClick}></PrimaryButton>
             </div>
