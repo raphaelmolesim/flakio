@@ -16,6 +16,7 @@ export function SyncTable({jobs, visible, selectedJobsState}) {
       setSelectedJobs([...selectedJobs, el.value])
     else
       setSelectedJobs(selectedJobs.filter((job) => job != el.value))
+    console.log('Selected jobs: ', selectedJobs)
   }
 
   function rows() {
@@ -37,7 +38,7 @@ export function SyncTable({jobs, visible, selectedJobsState}) {
             {groupedByName[jobName].length}
           </td>
           <td className="px-6 py-4">
-            <input type="checkbox" name="sync[]" value={jobName} onChange={toogleJob} checked={preferredJobs.includes(jobName)}></input>
+            <input type="checkbox" name="sync[]" value={jobName} onChange={toogleJob} ></input>
           </td>
       </tr>
       )

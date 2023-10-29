@@ -3,12 +3,12 @@ import { LayoutPage } from './layout_page.js'
 import { PrimaryButton, Header } from './basic_elements.js'
 import { API, GitLabAPI } from './api.ts'
 import { Alert } from './alert.tsx'
-import { useEffect, useState } from 'react';
-import { CredentialsPage } from './credentials_page.tsx';
+import { useEffect, useState } from 'react'
+import { CredentialsPage } from './credentials_page.tsx'
 import { isEmpty } from '../utils.ts';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
 import { getEventListeners } from 'events'
-import { ListJobs } from './list_jobs.tsx';
+import { ListJobs } from './list_jobs.tsx'
 import { Modal } from './modal.js'
 
 export function Home() {

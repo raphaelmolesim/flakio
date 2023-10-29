@@ -10,7 +10,6 @@ export function Header({text, success=false}) {
   }
 
   const icon = success ? successIcon() : null
-  console.log('Header', text, success, icon)
 
   return (
     <div className="pb-5 flex">
