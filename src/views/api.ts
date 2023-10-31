@@ -107,7 +107,19 @@ export class API {
     }).catch((error) => {
       console.log('Error fetching preferred jobs.', error)
     })
-  }  
+  }
+
+  async fetchTestsReport(jobName, callback) {
+    const decodedJobName = encodeURI(jobName.replace('/', '@slash-bar'))
+    console.log('--> API: Fetching for failed tests', decodedJobName)
+    fetch(`/tests/${decodedJobName.trim()}`).then((response) => {
+      response.json().then((json) => {
+        callback(json)
+      })
+    }).catch((error) => {
+      console.log('Error fetching preferred jobs.', error)
+    })
+  }
 }
 
 

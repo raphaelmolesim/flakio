@@ -4,6 +4,7 @@ import { Home } from './home';
 import { CredentialsPage } from './credentials_page';
 import { DownloadPage } from './download_page';
 import { SyncPage } from './sync_page';
+import { ReportsPage } from './reports_page';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/credentials/setup" element={<CredentialsPage />} />
         <Route path="/download" element={<DownloadPage />} />
         <Route path="/jobs/sync" element={<SyncPage />} />
+        <Route path="/reports" element={<ReportsPage />} />
       </Routes>
     </BrowserRouter>
   );

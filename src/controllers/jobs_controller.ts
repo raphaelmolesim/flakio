@@ -56,7 +56,7 @@ export const updateTestRunData = async ({ jobsDb, body }) => {
 export const getPreferredJobs = async ({ jobsDb }) => {
   console.log('[JobsController] Fetching preferred jobs')
   const jobs = await jobsDb().all()
-  console.log('[JobsController] Found jobs', jobs)
+  //console.log('[JobsController] Found jobs', jobs)
   //const groupedByName = Object.groupBy(jobs, (job) => job.name)
   const groupedByName = jobs.reduce((hash, job) => {
     hash[job.job_name] = hash[job.job_name] || []

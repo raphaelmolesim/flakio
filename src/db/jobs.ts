@@ -34,7 +34,7 @@ export class JobsDatabase {
   private db: Database;
 
   constructor() {
-    this.db = new Database('jobs.db', { create: true })
+    this.db = new Database('flakio.db', { create: true })
   }
 
   database() {

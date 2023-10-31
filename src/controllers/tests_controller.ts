@@ -26,3 +26,9 @@ export const syncTests = async ({ testsDb, body }) => {
     testIds: newItems
   }
 }
+
+export const getErrorsByMR = async ({ testsDb, params }) => {
+  const decodedJobName = decodeURI(params.jobName.replace('@slash-bar', '/'))
+  const tests = await testsDb().queryTestByMR(decodedJobName)
+  return tests
+}
