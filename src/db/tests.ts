@@ -61,15 +61,27 @@ export class TestsDatabase {
     console.log('[TestsDatabase] queryTestByMR for job: ', jobName)
     return await this.database().then((db) => db.query(
       `
-      SELECT Report.line, COUNT(Report.ref) AS MR FROM (
-        SELECT tests.line, jobs.ref FROM tests 
+      SELECT * FROM
+      (
+        SELECT tests.line, COUNT(jobs.ref) AS MR, 
+        (
+          SELECT 
+            GROUP_CONCAT(
+              CASE WHEN T.line IS tests.line
+              THEN  '4' -- 4 is the error code
+              ELSE  '5' -- 5 is the success code
+              END)
+            FROM jobs AS J
+          LEFT JOIN tests as T
+          ON J.job_id == T.job_id
+          WHERE J.job_name == $job_name
+        ) AS Executions FROM tests 
         INNER JOIN jobs 
         ON jobs.job_id == tests.job_id 
         WHERE jobs.job_name == $job_name
-        GROUP BY tests.line, jobs.ref
-      ) AS Report
-      GROUP BY Report.line
-      ORDER BY MR DESC
+        GROUP BY tests.line
+        ORDER BY MR DESC
+      ) WHERE MR > 1
       `
     ).all({ $job_name: jobName }))
   }

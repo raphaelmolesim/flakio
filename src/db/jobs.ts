@@ -41,7 +41,7 @@ export class JobsDatabase {
     return findOrCreateTable(this.db, 'jobs').then(() => { return this.db })
   }
 
-  all() {    
+  all() {
     return this.database().then((db) => db.query('SELECT * FROM jobs').all());
   }
 
