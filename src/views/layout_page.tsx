@@ -8,7 +8,7 @@ export function LayoutPage({children}){
         <FlakioLogo />
       </nav>
       <div className="flex flex-row h-[93%]">
-        <aside className="border-r w-72 flex ">
+        <aside className="border-r w-[15rem] flex shrink-0">
           <Menu />
         </aside>
         <main className="bg-gray-50 flex flex-1">

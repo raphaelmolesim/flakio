@@ -25,6 +25,27 @@ export function TestReportTable({tests, visible}) {
       return (<div className={`bg-red-300 border-red-500 ${classes}`} key={idx}></div>)
   }
 
+  function Tootip({text, id}) {
+    return (
+      <div id={id} role="tooltip" className="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip ">
+        {text}
+        <div className="tooltip-arrow" data-popper-arrow></div>
+      </div>
+    )
+  }
+
+  function showTooltip(event) {
+    const tooltip = document.getElementById(event.target.dataset.tooltipTarget)
+    tooltip.classList.remove('invisible')
+    tooltip.classList.remove('opacity-0')
+  }
+
+  function hideTooltip(event) {
+    const tooltip = document.getElementById(event.target.dataset.tooltipTarget)
+    tooltip.classList.add('invisible')
+    tooltip.classList.add('opacity-0')
+  }
+
   function rows() {
 
     if (!visible) return null;
@@ -33,15 +54,16 @@ export function TestReportTable({tests, visible}) {
     let executionIdx = 0
     return tests.map(test => {
       return (
-        <tr className="bg-white border-b" key={idx++}>
-          <td scope="row" className="px-6 py-2 font-medium text-gray-900 truncate">
-            {test["line"]}
+        <tr className="bg-white border-b flex" key={idx++}>
+          <td scope="row" className="px-6 py-2 font-medium text-gray-900 truncate w-[45%] block">
+            <a href="#" data-tooltip-target={`tooltip-${idx}`} onMouseOver={showTooltip} onMouseOut={hideTooltip}>{test["line"]}</a> 
+            <Tootip text={test["line"]} id={`tooltip-${idx}`} />
           </td>
-          <td className="px-6 py-2 truncate">
+          <td className="px-6 py-2 truncate w-[10%] block">
             {test["MR"]}
           </td>
-          <td className="px-6 py-2 flex gap-2 items-center">
-            {test["Executions"].split(',').map((execution) => {
+          <td className="px-6 py-2 flex gap-2 items-center w-[45%] block">
+            {test["Executions"].split(',').slice(-28, -1).map((execution) => {
               return executionIcon(statusEnum[parseInt(execution)], `${idx}=>${executionIdx++}`)
             })}
           </td>
@@ -51,17 +73,17 @@ export function TestReportTable({tests, visible}) {
   }
   
   return (
-    <div className={`relative overflow-x-auto pb-6 mt-6 ${ visible ? '' : 'hidden' }`}>
-      <table className="w-full text-sm text-left text-gray-500">
+    <div className={`relative pb-6 mt-6 ${ visible ? '' : 'hidden' }`}>
+      <table className="text-sm text-left text-gray-500 table-fixed w-full">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-          <tr>
-            <th scope="col" className="px-6 py-3">
+          <tr className="flex">
+            <th scope="col" className="px-6 py-3 w-[45%] block">
                 Test Name
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-6 py-3 w-[10%] block">
                 # fails cross MR
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-6 py-3 w-[45%] block">
                 Executions
             </th>
           </tr>
