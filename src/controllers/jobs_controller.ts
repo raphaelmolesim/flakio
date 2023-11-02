@@ -88,7 +88,7 @@ export const getGitLabFailedTests = async (ctx) => {
   console.log(`[JobsController] Found ${matches.length} Matches`)
 
   if (matches.length === 0) {
-    console.log(`[JobsController] No failed tests found`, logTrace)
+    console.log(`[JobsController] No failed tests found`)// , logTrace)
     return {
       failedTests: [],
       seed: null,

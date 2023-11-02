@@ -16,9 +16,10 @@ export class GitLabService {
     const url = `${this.apiUrl}/projects/${this.projectId}/jobs/${jobId}/trace?${this.querStringPrivateToken()}`
     console.log('[GitLabService] Fetching job trace', url)
     return this.fetchWithTimeout(url).then((response) => {
+      console.log('[GitLabService] Fetched job trace', response)
       return response.text()
     }).catch((error) => {
-      console.log('[GitLabService] Error fetching job trace', error.toString())
+      console.error('[GitLabService] Error fetching job trace', error.toString())
       return this.requestWithWget(url)
     })
   }
@@ -28,27 +29,26 @@ export class GitLabService {
   }
 
   private async requestWithWget(url){
+    console.log('[GitLabService] Fetching job trace with wget', url)
     var cmd = `wget -O tmp/trace.log ${url}`
     var child = require('child_process').execSync(cmd)
     const file = await Bun.file('tmp/trace.log').text()
-    console.log('[GitLabService] Fetched job trace with wget', file)
+    console.log('[GitLabService] Fetched job trace with wget')
     return file
   }
 
   private async fetchWithTimeout(url: string, data: any = {}) {
     const start = new Date().getSeconds();
-    const timeoutTimer = 10000
+    const timeoutTimer = 4000
     
     while (new Date().getSeconds() - start < 10) {
         try {
-            const res = await fetch(url, {
-              method: 'GET',
-              body: JSON.stringify(data)
-            })
+            const res = await fetch(url)
 
             try {
                 return await res;
             } catch (e) {
+                console.error("Error in fetch with timeout", e)
                 if (res.status < 400) {
                     return res.status;
                 } else {
@@ -56,6 +56,7 @@ export class GitLabService {
                 }
             }
         } catch (e) {
+          console.error("Error in fetch with timeout 2", e)
             await new Promise((resolve) => {
                 setTimeout(resolve, timeoutTimer);
             })

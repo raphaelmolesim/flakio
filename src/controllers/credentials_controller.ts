@@ -1,6 +1,6 @@
 
-export const credentialsIndex = ({ credentialsDb }) => {
-  const credentials = credentialsDb().all()
+export const credentialsIndex = async ({ credentialsDb }) => {
+  const credentials = await credentialsDb().all()
   const tranformedCredentials = credentials.map((credential) => {
     return {
       "id" : credential.id,
@@ -14,28 +14,28 @@ export const credentialsIndex = ({ credentialsDb }) => {
   }
 }
 
-export const credentialsCreate = ({ credentialsDb, body }) => {
+export const credentialsCreate = async ({ credentialsDb, body }) => {
   console.log('Controller: Creating credential', body)
   const newCredentials = {
     project_id: body.projectId,
     api_url: body.apiUrl,
     private_token: body.privateToken
   }
-  const id = credentialsDb().create(newCredentials)
+  const id = await credentialsDb().create(newCredentials)
   return {
     id
   }
 }
 
-export const credentialsDestroy = ({ credentialsDb, params }) => {
+export const credentialsDestroy = async ({ credentialsDb, params }) => {
   const id =  parseInt(params.id)
-  credentialsDb().destroy(id)
+  await credentialsDb().destroy(id)
   return {
     id
   }
 }
 
-export const credentialsUpdate =  ({ credentialsDb, params, body }) => {
+export const credentialsUpdate = async ({ credentialsDb, params, body }) => {
   console.log('Controller: Updating credential', body, params)
   const id = parseInt(params.id)
   const fieldsToUpdate = {
@@ -43,7 +43,7 @@ export const credentialsUpdate =  ({ credentialsDb, params, body }) => {
     api_url: body.apiUrl,
     private_token: body.privateToken
   }
-  credentialsDb().update(id, fieldsToUpdate)
+  await credentialsDb().update(id, fieldsToUpdate)
   return {
     id
   }

@@ -42,14 +42,15 @@ export class TestsDatabase {
 
   async all_by_line(line: string) {
     return await this.database().then((db) => {
-      return db.query('SELECT * FROM tests WHERE line = $line')
+      return db.query('SELECT tests.*, jobs.pipeline_id FROM tests INNER JOIN jobs ON jobs.job_id == tests.job_id WHERE tests.line = $line')
       .all({ $line: line }).map((test) => {
         return {
           id: test.id,
           line: test.line,
           name: test.name,
           error_messages: JSON.parse(test.error_messages_array),
-          job_id: test.job_id
+          job_id: test.job_id,
+          pipeline_id: test.pipeline_id
         }
       })
     })

@@ -62,7 +62,7 @@ export function SideModal({testLine}) {
           {
             details && details.map((detail) => {
               return (<li className="text-xs ml-5 py-2 list-disc" key={detail.job_id}>
-              <a href={`https://gitlab.com/happyco/hub/-/pipelines/${detail.job_id}`} target="blank">{detail.job_id}</a>
+              <a href={`https://gitlab.com/happyco/hub/-/pipelines/${detail.pipeline_id}`} target="blank">{detail.job_id}</a>
               </li>)
             }).slice(0, 5)
           }

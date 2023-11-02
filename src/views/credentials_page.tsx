@@ -23,6 +23,13 @@ export function CredentialsPage() {
         privateToken: privateToken
       }, (id) => {
         console.log('Created credential.', id)
+        setToast(<Toast kind='success' message='Credential saved.' />)
+        setCredential({
+          id: id,
+          projectId: projectId,
+          apiUrl: apiUrl,
+          privateToken: privateToken
+        })
       })
     } else {
       console.log('Updating credential id:', credential.id)
@@ -33,7 +40,7 @@ export function CredentialsPage() {
         privateToken: privateToken
       }, (id) => {
         console.log('Updated credential.', id)
-        setToast(<Toast kind='success' message='Credential updated.' />)
+        setToast(<Toast kind='success' message='Credential saved.' />)
         setCredential({
           id: id,
           projectId: projectId,
@@ -42,7 +49,6 @@ export function CredentialsPage() {
         })
       })
     }
-    
   }
 
   useEffect(() => {

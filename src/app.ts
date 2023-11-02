@@ -20,6 +20,7 @@ import {
 } from './controllers/jobs_controller.js'
 import { syncTests, getErrorsByMR, getTestDetails } from './controllers/tests_controller.js'
 
+new CredentialsDatabase().database()
 new JobsDatabase().database()
 new TestsDatabase().database()
 
