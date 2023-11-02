@@ -78,12 +78,11 @@ export const getGitLabJobs = (ctx) => {
 export const getGitLabFailedTests = async (ctx) => {
   const id = ctx.params.id
   const { projectId, apiUrl, privateToken } = ctx.query
-  console.log('[JobsController] Fetching log trace with credentials: ', projectId, apiUrl, privateToken)
   const gitlabService = new GitLabService(projectId, apiUrl, privateToken)
   const logTrace = await gitlabService.getJobTrace(id);
   
   // Debugging purposes only
-  // console.log(`[JobsController] log trace`, logTrace)
+  // console.log(`[JobsController] log trace`, logTrace, id)
   
   const matches = getTextBetween(logTrace, 'Failed examples:', 'Randomized with seed') 
   console.log(`[JobsController] Found ${matches.length} Matches`)
@@ -137,7 +136,7 @@ export const getGitLabFailedTests = async (ctx) => {
 }
 
 function getTextBetween(str, start, end) {
-  if (str === null || str === undefined) throw new Error('Wrong string is ', str)
+  if (str === null || str === undefined) throw new Error('This is a invalid string: ', str)
 
   const lines = str.split('\n')
 
