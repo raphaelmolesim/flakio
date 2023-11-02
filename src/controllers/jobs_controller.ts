@@ -121,7 +121,7 @@ export const getGitLabFailedTests = async (ctx) => {
   //}
 
   failedTest.map((test) => {
-    const errorMessages = getErrorMessage(errorMessagesCrop, test.testName)
+    const errorMessages = getErrorMessage(errorMessagesCrop, test.name)
     test.errorMessages = errorMessages
   })
 
@@ -170,6 +170,7 @@ function getErrorMessage(str, testName) {
 
   lines.forEach((line) => {
     if (line.includes(testName)) {
+      console.log(line, '=>', testName)
       selectLine = true
     }
 

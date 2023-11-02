@@ -63,7 +63,7 @@ export function ReportsPage() {
 
         <TestReportTable tests={tests} visible={tests.length > 0} modalSM={[showTestDetails, setShowTestDetails]} />
 
-        <SideModal testLine={showTestDetails} />
+        <SideModal modalSM={[showTestDetails, setShowTestDetails]} />
       </MainContent>
     </LayoutPage>
   )

@@ -63,7 +63,7 @@ export function TestReportTable({tests, visible, modalSM}) {
       return (
         <tr className="bg-white border-b flex" key={idx++}>
           <td scope="row" className="px-6 py-2 font-medium text-gray-900 truncate w-[45%] block">
-            <a onClick={showTestDetailsClick} data-tooltip-target={`tooltip-${idx}`} onMouseOver={showTooltip} onMouseOut={hideTooltip}>{test["line"]}</a> 
+            <a onClick={showTestDetailsClick} data-tooltip-target={`tooltip-${idx}`} onMouseOver={showTooltip} onMouseOut={hideTooltip} className="cursor-pointer">{test["line"]}</a> 
             <Tootip text={test["line"]} id={`tooltip-${idx}`} />
           </td>
           <td className="px-6 py-2 truncate w-[10%] block">
