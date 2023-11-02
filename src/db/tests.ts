@@ -40,6 +40,21 @@ export class TestsDatabase {
     })
   }
 
+  async all_by_line(line: string) {
+    return await this.database().then((db) => {
+      return db.query('SELECT * FROM tests WHERE line = $line')
+      .all({ $line: line }).map((test) => {
+        return {
+          id: test.id,
+          line: test.line,
+          name: test.name,
+          error_messages: JSON.parse(test.error_messages_array),
+          job_id: test.job_id
+        }
+      })
+    })
+  }
+
   async create(test: Test) {
     console.log('🦊 Creating test', test)
     return await this.database().then((db) => db.query(`INSERT INTO tests 

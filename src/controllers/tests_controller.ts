@@ -28,7 +28,14 @@ export const syncTests = async ({ testsDb, body }) => {
 }
 
 export const getErrorsByMR = async ({ testsDb, params }) => {
-  const decodedJobName = decodeURI(params.jobName.replace('@slash-bar', '/'))
+  const decodedJobName = decodeURI(params.jobName.replaceAll('@slash-bar', '/'))
   const tests = await testsDb().queryTestByMR(decodedJobName)
   return tests
+}
+
+export const getTestDetails = async ({ testsDb, params }) => {
+  const decodedTestLine = decodeURI(params.testLine).replaceAll('@slash-bar', '/')
+  console.log('[TestController] getTestDetails', decodedTestLine)
+  const test = await testsDb().all_by_line(decodedTestLine)
+  return test
 }

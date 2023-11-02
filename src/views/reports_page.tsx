@@ -4,11 +4,13 @@ import { LayoutPage } from "./layout_page"
 import { useEffect, useState } from "react"
 import { API } from "./api"
 import { TestReportTable } from "./test_report_table"
+import { SideModal } from "./side_modal"
 
 export function ReportsPage() {
   const [credential, setCredential] = useState(null)
   const [preferredJobs, setPreferredJobs] = useState([])
   const [tests, setTests] = useState([])
+  const [showTestDetails, setShowTestDetails] = useState(null)
 
   function loadCredential(callback) {
     const api = new API()
@@ -59,7 +61,9 @@ export function ReportsPage() {
           </ButtonGroup>
         </div>
 
-        <TestReportTable tests={tests} visible={tests.length > 0} />
+        <TestReportTable tests={tests} visible={tests.length > 0} modalSM={[showTestDetails, setShowTestDetails]} />
+
+        <SideModal testLine={showTestDetails} />
       </MainContent>
     </LayoutPage>
   )

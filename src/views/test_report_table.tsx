@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-export function TestReportTable({tests, visible}) {
+export function TestReportTable({tests, visible, modalSM}) {
+  const [showTestDetails, setShowTestDetails] = modalSM
 
   console.log('===> Test report table: ', tests, visible)
 
@@ -46,6 +47,12 @@ export function TestReportTable({tests, visible}) {
     tooltip.classList.add('opacity-0')
   }
 
+  function showTestDetailsClick(event) {
+    event.preventDefault()
+    console.log('Show test details', event.target.text)
+    setShowTestDetails(event.target.text)
+  }
+
   function rows() {
 
     if (!visible) return null;
@@ -56,7 +63,7 @@ export function TestReportTable({tests, visible}) {
       return (
         <tr className="bg-white border-b flex" key={idx++}>
           <td scope="row" className="px-6 py-2 font-medium text-gray-900 truncate w-[45%] block">
-            <a href="#" data-tooltip-target={`tooltip-${idx}`} onMouseOver={showTooltip} onMouseOut={hideTooltip}>{test["line"]}</a> 
+            <a onClick={showTestDetailsClick} data-tooltip-target={`tooltip-${idx}`} onMouseOver={showTooltip} onMouseOut={hideTooltip}>{test["line"]}</a> 
             <Tootip text={test["line"]} id={`tooltip-${idx}`} />
           </td>
           <td className="px-6 py-2 truncate w-[10%] block">

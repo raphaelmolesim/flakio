@@ -18,7 +18,7 @@ import {
   updateTestRunData, 
   getPreferredJobs 
 } from './controllers/jobs_controller.js'
-import { syncTests, getErrorsByMR } from './controllers/tests_controller.js'
+import { syncTests, getErrorsByMR, getTestDetails } from './controllers/tests_controller.js'
 
 new JobsDatabase().database()
 new TestsDatabase().database()
@@ -45,6 +45,7 @@ const app = new Elysia()
     .post('/sync-tests', syncTests)
     .get('/preferred-jobs', getPreferredJobs)
     .get('/tests/:jobName', getErrorsByMR)
+    .get('/tests/details/:testLine', getTestDetails)
     .listen(3000)
 
 console.log(
