@@ -13,7 +13,7 @@ export function DownloadPage() {
   const [countFetchedPages, setCountFetchedPages] = useState(0)
   const [selectedJobs, setSelectedJobs] = useState([])
   const [preferredJobs, setPreferredJobs] = useState([])
-  const maxNumberOfPages = 25
+  const maxNumberOfPages = 250
   const navigate = useNavigate()  
 
   function handleSynchronizeClick() {

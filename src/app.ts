@@ -16,7 +16,8 @@ import {
   syncJobs, 
   getGitLabFailedTests, 
   updateTestRunData, 
-  getPreferredJobs 
+  getPreferredJobs,
+  getLastImportData
 } from './controllers/jobs_controller.js'
 import { syncTests, getErrorsByMR, getTestDetails } from './controllers/tests_controller.js'
 
@@ -47,7 +48,8 @@ const app = new Elysia()
     .get('/preferred-jobs', getPreferredJobs)
     .get('/tests/:jobName', getErrorsByMR)
     .get('/tests/details/:testLine', getTestDetails)
-    .listen(3000)
+    .get('/last-import', getLastImportData)
+    .listen(3030)
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`

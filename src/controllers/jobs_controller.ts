@@ -68,6 +68,23 @@ export const getPreferredJobs = async ({ jobsDb }) => {
   return preferredJobs
 }
 
+export const getLastImportData = async ({ jobsDb }) => {
+  console.log('[JobsController] Fetching preferred jobs')
+  const jobs = await jobsDb().all()
+  const lastJob = jobs.reduce((candidate, job) => {
+    const jobDate = new Date(job.finished_at)
+    const candidateDate = new Date(candidate.finished_at)
+    if (candidate.finished_at === undefined || candidateDate > jobDate)
+      return job
+    else
+      return candidate
+  }, {})
+  return {
+    lastDateFetched: lastJob.finished_at,
+    jobsCount: jobs.length
+  }
+}
+
 export const getGitLabJobs = (ctx) => {
   const { projectId, apiUrl, privateToken, page } = ctx.query
   console.log('[JobsController] Fetching jobs with credentials: ', projectId, apiUrl, privateToken)

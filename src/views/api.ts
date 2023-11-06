@@ -130,7 +130,17 @@ export class API {
     }).catch((error) => {
       console.log('Error fetching credentials.', error)
     })
-  } 
+  }
+
+  async fetchLastImportData(callback) {
+    return fetch('/last-import').then((response) => {
+      response.json().then((json) => {
+        callback(json)
+      })
+    }).catch((error) => {
+      console.log('Error fetching credentials.', error)
+    })
+  }
 }
 
 
