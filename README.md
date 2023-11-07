@@ -1,3 +1,21 @@
+# What is it about?
+
+This is a local dashboard to generate insights on GitLab data.
+
+# Tech Stack
+
+* Bun 1.0.6
+* Nodejs 16.10.0 or greater
+* Sqlite 3
+* Typescript and Javascript
+
+# Frameworks
+
+* Elysia web framework
+* React library for web
+* Tailwind CSS framework
+* Nodemon is a utility to automatically restart your server
+
 # Requirements
 
 This project require that you have **nodejs** installed **v16.19.0 or greater**.
