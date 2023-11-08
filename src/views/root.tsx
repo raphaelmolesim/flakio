@@ -1,10 +1,10 @@
 import * as ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Home } from './home';
-import { CredentialsPage } from './credentials_page';
-import { DownloadPage } from './download_page';
-import { SyncPage } from './sync_page';
-import { ReportsPage } from './reports_page';
+import { Home } from './pages/home';
+import { CredentialsPage } from './pages/credentials_page';
+import { DownloadPage } from './pages/download_page/download_page';
+import { SyncPage } from './pages/sync_page/sync_page';
+import { ReportsPage } from './pages/reports_page/reports_page';
 
 function App() {
   return (

@@ -1,10 +1,10 @@
-import { LayoutPage } from "./layout_page"
-import { MainContent } from "./main_content"
-import { Header, PrimaryButton } from "./basic_elements"
+import { LayoutPage } from "../../components/layout_page"
+import { MainContent } from "../../components/main_content"
+import { Header, PrimaryButton } from "../../components/basic_elements"
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom";
-import { API, GitLabAPI } from "./api"
-import { LoadingPage } from "./loading_page";
+import { API, GitLabAPI } from "../../services/api"
+import { LoadingPage } from "../../components/loading_page";
 import { SyncedTestTable } from "./synced_test_table"
 
 export function SyncPage(prop) {

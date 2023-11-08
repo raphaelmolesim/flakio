@@ -1,8 +1,8 @@
-import { MainContent } from './main_content.js'
-import { LayoutPage } from './layout_page.js'
-import { Header, PrimaryButton, Toast } from './basic_elements.js'
-import { API } from './api.ts'
-import { isEmpty } from '../utils.ts';
+import { MainContent } from '../components/main_content.js'
+import { LayoutPage } from '../components/layout_page.js'
+import { Header, PrimaryButton, Toast } from '../components/basic_elements.js'
+import { API } from '../services/api.js'
+import { isEmpty } from '../../utils.js';
 import { useEffect, useState } from 'react';
 
 export function CredentialsPage() {

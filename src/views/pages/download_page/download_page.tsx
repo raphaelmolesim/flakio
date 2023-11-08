@@ -1,11 +1,11 @@
-import { LayoutPage } from "./layout_page"
-import { MainContent } from "./main_content"
-import { Header, PrimaryButton } from "./basic_elements"
+import { LayoutPage } from "../../components/layout_page"
+import { MainContent } from "../../components/main_content"
+import { Header, PrimaryButton } from "../../components/basic_elements"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { API, GitLabAPI } from "./api"
+import { API, GitLabAPI } from "../../services/api"
 import { JobsToSync } from "./jobs_to_sync_table"
-import { LoadingPage } from "./loading_page"
+import { LoadingPage } from "../../components/loading_page"
 
 export function DownloadPage() {
   const [credential, setCredential] = useState(null)
@@ -13,8 +13,8 @@ export function DownloadPage() {
   const [countFetchedPages, setCountFetchedPages] = useState(0)
   const [selectedJobs, setSelectedJobs] = useState([])
   const [preferredJobs, setPreferredJobs] = useState([])
-  const maxNumberOfPages = 250
-  const navigate = useNavigate()  
+  const maxNumberOfPages = 5
+  const navigate = useNavigate()
 
   function handleSynchronizeClick() {
     console.log('Synchronize click.', selectedJobs)

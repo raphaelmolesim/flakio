@@ -1,5 +1,5 @@
-import { Home } from "./home.tsx"
-import { CredentialsPage } from "./credentials_page.tsx"
+import { Home } from "../pages/home.js"
+import { CredentialsPage } from "../pages/credentials_page.js"
 import { Link } from "react-router-dom";
 
 export function Menu() {

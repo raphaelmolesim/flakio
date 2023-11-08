@@ -1,8 +1,8 @@
-import { Header, PrimaryButton, ButtonGroup, ButtonGroupElement } from "./basic_elements"
-import { MainContent } from "./main_content"
-import { LayoutPage } from "./layout_page"
+import { Header, PrimaryButton, ButtonGroup, ButtonGroupElement } from "../../components/basic_elements"
+import { MainContent } from "../../components/main_content"
+import { LayoutPage } from "../../components/layout_page"
 import { useEffect, useState } from "react"
-import { API } from "./api"
+import { API } from "../../services/api"
 import { TestReportTable } from "./test_report_table"
 import { SideModal } from "./side_modal"
 

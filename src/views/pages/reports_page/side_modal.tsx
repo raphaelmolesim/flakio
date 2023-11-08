@@ -1,6 +1,6 @@
-import { Header } from "./basic_elements"
+import { Header } from "../../components/basic_elements"
 import { useState, useEffect } from "react"
-import { API } from "./api"
+import { API } from "../../services/api"
 
 export function SideModal({ modalSM }) {
   const [showTestDetails, setShowTestDetails] = modalSM

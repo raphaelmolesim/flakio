@@ -1,15 +1,15 @@
-import { MainContent } from './main_content.js'
-import { LayoutPage } from './layout_page.js'
-import { PrimaryButton, Header } from './basic_elements.js'
-import { API, GitLabAPI } from './api.ts'
-import { Alert } from './alert.tsx'
+import { MainContent } from '../components/main_content.js'
+import { LayoutPage } from '../components/layout_page.js'
+import { PrimaryButton, Header } from '../components/basic_elements.js'
+import { API, GitLabAPI } from '../services/api.js'
+import { Alert } from '../components/alert.js'
 import { useEffect, useState } from 'react'
-import { CredentialsPage } from './credentials_page.tsx'
-import { isEmpty } from '../utils.ts';
+import { CredentialsPage } from './credentials_page.js'
+import { isEmpty } from '../../utils.js';
 import { useNavigate } from 'react-router-dom'
 import { getEventListeners } from 'events'
-import { ListJobs } from './list_jobs.tsx'
-import { Modal } from './modal.js'
+import { ListJobs } from '../list_jobs.js'
+import { Modal } from '../components/modal.js'
 
 export function Home() {
   const [credential, setCredential] = useState('none')
