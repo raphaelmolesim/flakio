@@ -24,6 +24,16 @@ export class GitLabService {
     })
   }
 
+  public getPipeline(pipelineId) {
+    const url = `${this.apiUrl}/projects/${this.projectId}/pipelines/${pipelineId}?${this.querStringPrivateToken()}`
+    return this.fetchWithTimeout(url).then((response) => {
+      return response.json()
+    }).catch((error) => {
+      console.error('[GitLabService] Error fetching job trace', error.toString())
+      return this.requestWithWget(url)
+    })
+  }
+
   private querStringPrivateToken() {
     return `private_token=${this.privateToken}`
   }
@@ -42,25 +52,25 @@ export class GitLabService {
     const timeoutTimer = 4000
     
     while (new Date().getSeconds() - start < 10) {
-        try {
-            const res = await fetch(url)
+      try {
+        const res = await fetch(url)
 
-            try {
-                return await res;
-            } catch (e) {
-                console.error("Error in fetch with timeout", e)
-                if (res.status < 400) {
-                    return res.status;
-                } else {
-                    throw e;
-                }
-            }
+        try {
+          return await res;
         } catch (e) {
-          console.error("Error in fetch with timeout 2", e)
-            await new Promise((resolve) => {
-                setTimeout(resolve, timeoutTimer);
-            })
+          console.error("Error in fetch with timeout", e)
+          if (res.status < 400) {
+              return res.status;
+          } else {
+              throw e;
+          }
         }
+      } catch (e) {
+        console.error("Error in fetch with timeout 2", e)
+        await new Promise((resolve) => {
+          setTimeout(resolve, timeoutTimer);
+        })
+      }
     }
-}
+  }
 }
