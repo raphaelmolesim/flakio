@@ -43,7 +43,7 @@ export function Home() {
         console.log('Has credentials.', credentials[0])
         setCredential(credentials[0])
         api.fetchLastImportData((lastImportData) => {
-          console.log('Last import: ', lastImportData.lastDateFetched)
+          console.log('Last import Data: ', lastImportData)
           setLastImport(lastImportData)
         })
       }
@@ -51,7 +51,8 @@ export function Home() {
   }, [MainContent]);
 
   function RenderLastImport() {
-    if (lastImport != null) {
+    console.log("last import", lastImport)
+    if (lastImport != null && lastImport.jobsCount > 0) {
       return (
         <div className="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 mb-10">
           <h5 className="mb-4 text-xl font-medium">Imported data</h5>
