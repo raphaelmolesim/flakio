@@ -33,9 +33,7 @@ export const getErrorsByMR = async ({ testsDb, params }) => {
   return tests
 }
 
-export const getTestDetails = async ({ testsDb, params }) => {
-  const decodedTestLine = decodeURI(params.testLine).replaceAll('@slash-bar', '/')
-  console.log('[TestController] getTestDetails', decodedTestLine)
-  const test = await testsDb().all_by_line(decodedTestLine)
-  return test
+export const getTestDetails = async ({ testsDb, query }) => {
+  console.log('[TestController] #getTestDetails QUERY STRING', query)
+  return await testsDb().all(query.testLine, query.jobName)
 }

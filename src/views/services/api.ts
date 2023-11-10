@@ -121,9 +121,11 @@ export class API {
     })
   }
 
-  async fetchTestDetails(testLine, callback) {
-    const encodedTestLine = encodeURI(testLine.replaceAll('/', '@slash-bar'))
-    return fetch('/tests/details/' + encodedTestLine).then((response) => {
+  async fetchTestDetails(testLine, jobName, callback) {
+    return fetch('/tests/details?' + new URLSearchParams({
+      testLine: testLine,
+      jobName: jobName
+    })).then((response) => {
       response.json().then((json) => {
         callback(json)
       })

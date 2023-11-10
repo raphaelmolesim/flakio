@@ -40,10 +40,19 @@ export class TestsDatabase {
     })
   }
 
-  async all_by_line(line: string) {
+  async all(line: string, jobName: string) {
+    console.log("[TestsDatabase] #all_by_line PARAMS [", line, '/' ,jobName, ']')
     return await this.database().then((db) => {
-      return db.query('SELECT tests.*, jobs.pipeline_id FROM tests INNER JOIN jobs ON jobs.job_id == tests.job_id WHERE tests.line = $line')
-      .all({ $line: line }).map((test) => {
+      const query = db.query(`
+        SELECT tests.*, jobs.pipeline_id FROM tests 
+        INNER JOIN jobs 
+        ON jobs.job_id == tests.job_id 
+        WHERE tests.line == $line
+        AND jobs.job_name == $jobName
+      `)
+      const results = query.all({ $line: line, $jobName: jobName })
+      console.log('[TestsDatabase] #all_by_line sql => ', query.toString())
+      return results.map((test) => {
         return {
           id: test.id,
           line: test.line,

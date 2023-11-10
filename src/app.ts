@@ -47,7 +47,7 @@ const app = new Elysia()
     .post('/sync-tests', syncTests)
     .get('/preferred-jobs', getPreferredJobs)
     .get('/tests/:jobName', getErrorsByMR)
-    .get('/tests/details/:testLine', getTestDetails)
+    .get('/tests/details', getTestDetails)
     .get('/last-import', getLastImportData)
     .listen(3030)
 

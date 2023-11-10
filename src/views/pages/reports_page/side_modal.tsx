@@ -3,27 +3,28 @@ import { useState, useEffect } from "react"
 import { API } from "../../services/api"
 
 export function SideModal({ modalSM }) {
-  const [showTestDetails, setShowTestDetails] = modalSM
+  const [searchData, setSearchData] = modalSM
   const [details, setDetails] = useState(null)
 
   useEffect(() => {
-    console.log('Load data for:', showTestDetails)
-    if (!showTestDetails) {
+    console.debug('[SideModal] Load data for:', searchData)
+    if (!searchData) {
       return
     } else {
+      const [testLine, jobName] = searchData
       const api = new API()
-      api.fetchTestDetails(showTestDetails, (response) => {
-        console.log('Job report: ', response)
+      api.fetchTestDetails(testLine, jobName, (response) => {
+        console.debug('[SideModal] Job report: ', response)
         setDetails(response)
       })
     }
-  }, [showTestDetails])
+  }, [searchData])
 
   useEffect(() => {
-    console.log('Details: ', details)    
+    console.log('Details: ', details)
   }, [details])
 
-  const visibleClasses = showTestDetails ? '' : 'hidden'
+  const visibleClasses = searchData ? '' : 'hidden'
 
   const errorMessages = details && details.map((detail) => {
     return detail.error_messages
@@ -38,7 +39,7 @@ export function SideModal({ modalSM }) {
     <div className={`fixed top-0 right-0 bg-white min-w-[480px] w-[50%] h-screen p-10 shadow-2xl rounded-lg border-l-2 overflow-y-scroll ${visibleClasses}`}>
       <div className="flex">
         <Header text="Test Details" />
-        <button className="ml-auto relative -top-2" onClick={() => setShowTestDetails(null)}>
+        <button className="ml-auto relative -top-2" onClick={() => setSearchData(null)}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
             <path strokeLinejoin="round" strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -48,7 +49,7 @@ export function SideModal({ modalSM }) {
         <h1 className="wrap-text text-lg">{details && details[0].name}</h1>
         <br />
         <h2>Test line</h2>
-        <p className="text-xs wrap-text">{showTestDetails}</p><br />
+        <p className="text-xs wrap-text">{searchData}</p><br />
         <h3>Errors Messages:</h3>
         <ul>
           {

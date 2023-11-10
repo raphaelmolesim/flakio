@@ -10,7 +10,8 @@ export function ReportsPage() {
   const [credential, setCredential] = useState(null)
   const [preferredJobs, setPreferredJobs] = useState([])
   const [tests, setTests] = useState([])
-  const [showTestDetails, setShowTestDetails] = useState(null)
+  const [modalSearchData, setModalSearchData] = useState(null)
+  const [selectedJob, setSelectedJob] = useState(null)
 
   function loadCredential(callback) {
     const api = new API()
@@ -35,6 +36,7 @@ export function ReportsPage() {
 
   function handleClick(event, job) {
     console.log('Click /', job, '/')
+    setSelectedJob(job)
     const api = new API()
     api.fetchTestsReport(job, (response) => {
       console.log('Job report: ', response)
@@ -61,9 +63,9 @@ export function ReportsPage() {
           </ButtonGroup>
         </div>
 
-        <TestReportTable tests={tests} visible={tests.length > 0} modalSM={[showTestDetails, setShowTestDetails]} />
+        <TestReportTable tests={tests} visible={tests.length > 0} modalSM={[modalSearchData, setModalSearchData]} jobName={selectedJob}/>
 
-        <SideModal modalSM={[showTestDetails, setShowTestDetails]} />
+        <SideModal modalSM={[modalSearchData, setModalSearchData]} />
       </MainContent>
     </LayoutPage>
   )

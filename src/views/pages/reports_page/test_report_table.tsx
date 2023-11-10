@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-export function TestReportTable({tests, visible, modalSM}) {
-  const [showTestDetails, setShowTestDetails] = modalSM
+export function TestReportTable({tests, visible, modalSM, jobName}) {
+  const [modalSearchData, setModalSearchData] = modalSM
 
-  console.log('===> Test report table: ', tests, visible)
+  console.log('===> Test report table: ', tests, visible, jobName)
 
   const statusEnum = {
     1: 'created', 
@@ -47,10 +47,10 @@ export function TestReportTable({tests, visible, modalSM}) {
     tooltip.classList.add('opacity-0')
   }
 
-  function showTestDetailsClick(event) {
+  function showTestDetails(event) {
     event.preventDefault()
-    console.log('Show test details', event.target.text)
-    setShowTestDetails(event.target.text)
+    console.log('Show test details', event.target.text, jobName)
+    setModalSearchData([event.target.text, jobName])
   }
 
   function rows() {
@@ -63,7 +63,7 @@ export function TestReportTable({tests, visible, modalSM}) {
       return (
         <tr className="bg-white border-b flex" key={idx++}>
           <td scope="row" className="px-6 py-2 font-medium text-gray-900 truncate w-[45%] block">
-            <a onClick={showTestDetailsClick} data-tooltip-target={`tooltip-${idx}`} onMouseOver={showTooltip} onMouseOut={hideTooltip} className="cursor-pointer">{test["line"]}</a> 
+            <a onClick={showTestDetails} data-tooltip-target={`tooltip-${idx}`} onMouseOver={showTooltip} onMouseOut={hideTooltip} className="cursor-pointer">{test["line"]}</a> 
             <Tootip text={test["line"]} id={`tooltip-${idx}`} />
           </td>
           <td className="px-6 py-2 truncate w-[10%] block">
