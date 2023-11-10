@@ -2,17 +2,17 @@ const { exec, spawn } = require('child_process');
 
 const subProcesses = []
 
-subProcesses.push(spawn('source ~/.zshrc ; bun start', {
+subProcesses.push(spawn('bun start', {
   stdio: 'inherit',
   shell: true
 }))
 
-subProcesses.push(spawn('source ~/.zshrc ; bun compile-react', {
+subProcesses.push(spawn('bun compile-react', {
   stdio: 'inherit',
   shell: true
 }))
 
-subProcesses.push(spawn('source ~/.zshrc ; bun assets', {
+subProcesses.push(spawn('bun assets', {
   stdio: 'inherit',
   shell: true
 }))
