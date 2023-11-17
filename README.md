@@ -49,3 +49,10 @@ If you use GitLab cloud this is the base url: https://gitlab.com/api/v4, if you 
 
 ## Private token
 Get your private token at this page: https://gitlab.com/-/profile/personal_access_tokens
+
+## CI notification feature
+You can get notified when CI have finished to run by running the following command:
+```
+ci_ping_me $pipelineId
+```
+replace the $pipelineId by the Id of your pipeline
