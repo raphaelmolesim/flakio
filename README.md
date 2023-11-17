@@ -50,6 +50,10 @@ If you use GitLab cloud this is the base url: https://gitlab.com/api/v4, if you 
 ## Private token
 Get your private token at this page: https://gitlab.com/-/profile/personal_access_tokens
 
+# Command Line features
+
+There are handy command list features that help day-to-day work on GitLab.
+
 ## CI notification feature
 You can get notified when CI have finished to run by running the following command:
 ```
@@ -66,7 +70,8 @@ ci_ping_me --trace-job=$jobId
 ci_ping_me -j=$jobId
 ```
 
-## Peferences configuration
+# Preferences configuration
+
 Copy the the the `.env.sample` to the root folder, and rename the copy to `.env`.
 You may find the follow preferences available:
 
