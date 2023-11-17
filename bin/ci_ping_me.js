@@ -31,9 +31,10 @@ new CredentialsDatabase().all().then(async function(credentials) {
   playAudioNotification()
 })
 
-const playAudioNotification = function(audioId = 1) {
-  const player = require('play-sound')({})  
-  player.play(`audio/notification-v${audioId}.mp3`, function(err){
+const playAudioNotification = function(audioId = null) {
+  const player = require('play-sound')({})
+  const id = audioId || Bun.env.NOTIFICATION_SOUND_ID || 1;  
+  player.play(`audio/notification-v${id}.mp3`, function(err){
     if (err) throw err
   })
 }

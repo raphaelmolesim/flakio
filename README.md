@@ -56,3 +56,10 @@ You can get notified when CI have finished to run by running the following comma
 ci_ping_me $pipelineId
 ```
 replace the $pipelineId by the Id of your pipeline
+
+## Peferences configuration
+Copy the the the `.env.sample` to the root folder, and rename the copy to `.env`.
+You may find the follow preferences available:
+
+* NOTIFICATION_SOUND_ID that is the audio notification that the application is going to use. There are a few options in the `audio` folder you may choose the one that you most like by usinsg number in the file name as value to this variable.
+  e.g. to play audio/notification-v2.mp3 set NOTIFICATION_SOUND_ID=2
