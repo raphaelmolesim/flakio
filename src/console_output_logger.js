@@ -3,6 +3,7 @@ import chalk from 'chalk'
 export class ConsoleOutputLogger {
 
   constructor(debugLevel='info') {
+    this.debugLevel = debugLevel
     this.log = console.log
     this.error = console.error
   }
@@ -17,5 +18,10 @@ export class ConsoleOutputLogger {
 
   inline(text) {
     process.stdout.write(text)
+  }
+
+  debug(...args) {
+    if (this.debugLevel === 'debug')
+      this.log(...args)
   }
 }

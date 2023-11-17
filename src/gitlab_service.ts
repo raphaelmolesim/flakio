@@ -24,18 +24,54 @@ export class GitLabService {
     })
   }
 
+  public getJob(jobId) {
+    const params = { id: jobId }
+    const url = `${this.apiUrl}/projects/${this.projectId}/jobs?${this.querStringPrivateToken(params)}`
+    return this.fetchWithTimeout(url).then((response) => {
+      return response.json()
+    }).catch((error) => {
+      console.error('[GitLabService] Error fetching job data', error.toString())
+      return this.requestWithWget(url)
+    })
+  }
+
   public getPipeline(pipelineId) {
     const url = `${this.apiUrl}/projects/${this.projectId}/pipelines/${pipelineId}?${this.querStringPrivateToken()}`
     return this.fetchWithTimeout(url).then((response) => {
       return response.json()
     }).catch((error) => {
-      console.error('[GitLabService] Error fetching job trace', error.toString())
+      console.error('[GitLabService] Error fetching pipeline data', error.toString())
       return this.requestWithWget(url)
     })
   }
 
-  private querStringPrivateToken() {
-    return `private_token=${this.privateToken}`
+  public getUser() {
+    const url = `${this.apiUrl}/user?${this.querStringPrivateToken()}`
+    return this.fetchWithTimeout(url).then((response) => {
+      return response.json()
+    }).catch((error) => {
+      console.error('[GitLabService] Error fetching user data', error.toString())
+      return this.requestWithWget(url)
+    })
+  }
+
+  public getPipelines(status, username) {
+    const params = {
+      status: status,
+      username: username
+    }
+    const url = `${this.apiUrl}/projects/${this.projectId}/pipelines?${this.querStringPrivateToken(params)}`
+    return this.fetchWithTimeout(url).then((response) => {
+      return response.json()
+    }).catch((error) => {
+      console.error('[GitLabService] Error fetching user data', error.toString())
+      return this.requestWithWget(url)
+    })
+  }
+
+  private querStringPrivateToken(additionalParams = {}) {
+    const privateToken = { private_token: this.privateToken }
+    return new URLSearchParams({ ...privateToken, ...additionalParams }).toString()
   }
 
   private async requestWithWget(url){

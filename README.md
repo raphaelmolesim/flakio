@@ -55,7 +55,16 @@ You can get notified when CI have finished to run by running the following comma
 ```
 ci_ping_me $pipelineId
 ```
-replace the $pipelineId by the Id of your pipeline
+Replace the $pipelineId by the Id of your pipeline
+
+You can also not provide an $pipelineId and `ci_ping_me` will try to find the pipeline that is running where you are the author, if there are more than one it will ask for the $pipelineId, but if there is just one pipeline is is going to track this one.
+
+You can also track individual jobs, so you can provide an $jobId to the folliwing flag:
+```
+ci_ping_me --trace-job=$jobId
+# or
+ci_ping_me -j=$jobId
+```
 
 ## Peferences configuration
 Copy the the the `.env.sample` to the root folder, and rename the copy to `.env`.
