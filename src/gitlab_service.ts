@@ -25,9 +25,9 @@ export class GitLabService {
   }
 
   public getJob(jobId) {
-    const params = { id: jobId }
-    const url = `${this.apiUrl}/projects/${this.projectId}/jobs?${this.querStringPrivateToken(params)}`
+    const url = `${this.apiUrl}/projects/${this.projectId}/jobs/${jobId}?${this.querStringPrivateToken()}`
     return this.fetchWithTimeout(url).then((response) => {
+      console.log('[GitLabService] Fetching job data', jobId)
       return response.json()
     }).catch((error) => {
       console.error('[GitLabService] Error fetching job data', error.toString())

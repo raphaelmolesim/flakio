@@ -15,7 +15,7 @@ new CredentialsDatabase().all().then(async function(credentials) {
   
   let id = null
   logger.debug("[Ci Ping Me] Arguments:", process.argv)
-  let fetcher = () => gitlabService.getPipeline()  
+  let fetcher = (id) => gitlabService.getPipeline(id)  
 
   if (process.argv.length === 2) {
     const userData = await gitlabService.getUser()
@@ -41,7 +41,7 @@ new CredentialsDatabase().all().then(async function(credentials) {
         process.exit(1)
       } else {
         id = traceJobFlag[1]
-        fetcher = () => gitlabService.getJob()
+        fetcher = (id) => gitlabService.getJob(id)
       }
 
     } else
@@ -56,12 +56,12 @@ new CredentialsDatabase().all().then(async function(credentials) {
   let status = 'starting'
   logger.info("==> CI monitoring:", id)
   
-  while (status === "running" || status == "starting") {
+  while (status === "running" || status === "starting" || status === "pending") {
     if (status != 'starting')
       await Bun.sleep(20 * 1000)
     const pipelineData = await fetcher(id)
     status = pipelineData["status"]
-    logger.inline(".")
+    logger.inline('.')
   }
 
   logger.info("\n==> Done!")
