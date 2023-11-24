@@ -33,9 +33,14 @@ const app = new Elysia()
     .use(staticPlugin({
       assets : "./dist"
     }))
-    .get('/', () => (
-      Bun.file('./dist/home.html')
-    ))
+
+    // React routes
+    .get('/', () => Bun.file('./dist/home.html'))
+    .get('/settings', () => Bun.file('./dist/home.html'))
+    .get('/download', () => Bun.file('./dist/home.html'))
+    .get('/reports', () => Bun.file('./dist/home.html'))
+    
+    // API routes
     .get('/credentials', credentialsIndex)
     .post('/credentials', credentialsCreate)
     .delete('/credentials/:id', credentialsDestroy)
