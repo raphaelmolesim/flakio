@@ -6,6 +6,7 @@ import { staticPlugin } from '@elysiajs/static'
 import { CredentialsDatabase } from './db/credentials.ts'
 import { JobsDatabase } from './db/jobs.ts'
 import { TestsDatabase } from './db/tests.ts'
+import { SettingsDatabase } from './db/settings.js'
 import { 
   credentialsIndex, 
   credentialsCreate, 
@@ -20,15 +21,18 @@ import {
   getLastImportData
 } from './controllers/jobs_controller.js'
 import { syncTests, getErrorsByMR, getTestDetails } from './controllers/tests_controller.js'
+import { settingsIndex, settingsCreate, settingsUpdate, settingsBulkUpdate } from "./controllers/settings_controller.js"
 
 new CredentialsDatabase().database()
 new JobsDatabase().database()
 new TestsDatabase().database()
+new SettingsDatabase().database()
 
 const app = new Elysia()
     .decorate("credentialsDb", () => new CredentialsDatabase())
     .decorate("jobsDb", () => new JobsDatabase())
     .decorate("testsDb", () => new TestsDatabase())
+    .decorate("settingsDb", () => new SettingsDatabase())
     .use(html())
     .use(staticPlugin({
       assets : "./dist"
@@ -54,6 +58,13 @@ const app = new Elysia()
     .get('/tests/:jobName', getErrorsByMR)
     .get('/tests/details', getTestDetails)
     .get('/last-import', getLastImportData)
+
+    // Settings API routes
+    .get('/api/settings', settingsIndex)
+    .post('/api/settings', settingsCreate)
+    .patch('/api/settings', settingsUpdate)
+    .put('/api/settings/bulk-update', settingsBulkUpdate)
+    
     .listen(3030)
 
 console.log(

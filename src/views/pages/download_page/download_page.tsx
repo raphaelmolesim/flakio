@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom"
 import { API, GitLabAPI } from "../../services/api"
 import { JobsToSync } from "./jobs_to_sync_table"
 import { LoadingPage } from "../../components/loading_page"
+import { SettingsService } from '../../services/settings_service'
 
 export function DownloadPage() {
   const [credential, setCredential] = useState(null)
@@ -13,7 +14,7 @@ export function DownloadPage() {
   const [countFetchedPages, setCountFetchedPages] = useState(0)
   const [selectedJobs, setSelectedJobs] = useState([])
   const [preferredJobs, setPreferredJobs] = useState([])
-  const maxNumberOfPages = 5
+  const [maxNumberOfPages, setMaxNumberOfPages] = useState(null)  
   const navigate = useNavigate()
 
   function handleSynchronizeClick() {
@@ -53,7 +54,20 @@ export function DownloadPage() {
   }
 
   useEffect(() => {
+    if (maxNumberOfPages !== null) {
+      return
+    }
+
+    const settingsService = new SettingsService()
+    settingsService.all((settingsDictonary) => {
+      const numberOfPagesToDownload = parseInt(settingsDictonary['numberOfPagesToDownload'])
+      setMaxNumberOfPages(numberOfPagesToDownload)
+    })
+  }, [countFetchedPages])
+
+  useEffect(() => {
     console.log('Loading jobs: ', countFetchedPages)
+
     if (countFetchedPages >= maxNumberOfPages) {
       loadPreferredJobs()
       return
@@ -70,8 +84,7 @@ export function DownloadPage() {
         setCountFetchedPages(countFetchedPages + 1)        
       }, countFetchedPages + 1)
     })
-
-  }, [countFetchedPages])
+  }, [maxNumberOfPages, countFetchedPages])
   
     return (
       <LayoutPage>
