@@ -10,11 +10,11 @@ export class ConsoleOutputLogger {
   }
 
   info(...args) {
-    this.log(chalk.green(...args))
+    this.log(chalk.green(...[`[${this.context}]`, ...args]))
   }
 
   error(...args) {
-    this.error(chalk.red(...args))
+    this.error(chalk.red(...[`[${this.context}]`, ...args]))
   }
 
   inline(text) {

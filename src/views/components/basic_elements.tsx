@@ -18,18 +18,22 @@ export function Header({text, success=false}) {
   )
 }
 
-export function PrimaryButton({text, onClick, disabled=false, size = "md" }) {
+export function PrimaryButton({text, onClick, disabled=false, size = "md", kind = "primary" }) {
   function handleClick(e) {
     e.preventDefault()
-    onClick()
+    onClick(e)
   }
   const disabledClasses = "bg-blue-400 cursor-not-allowed"
-  const enabledClasses = "bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-200"
+  const enabledClasses = {
+    primary: "bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-200",
+    danger: "bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-200"
+  }[kind]
   const statusClasses = disabled ? disabledClasses : enabledClasses
 
   const sizeClasses = {
-    "sm": "px-5 py-2.5 text-sm",
-    "md": "px-4 py-2.5 text-xs"
+    "xs": "px-3 py-2 text-xs",
+    "sm": "px-4 py-2.5 text-xs",
+    "md": "px-5 py-2.5 text-sm"
   }[size]
 
   return (
@@ -37,6 +41,10 @@ export function PrimaryButton({text, onClick, disabled=false, size = "md" }) {
       { text }
     </button>
   )
+}
+
+export function AlternativeButton({text, onClick}) {
+  return (<button type="button" onClick={onClick} className="py-2.5 px-5 me-2 mb-2 text-sm font-medium  focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">{text}</button>)
 }
 
 export function Toast({kind, message}) {

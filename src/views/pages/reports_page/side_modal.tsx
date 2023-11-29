@@ -24,7 +24,9 @@ export function SideModal({ modalSM }) {
     console.log('Details: ', details)
   }, [details])
 
-  const visibleClasses = searchData ? '' : 'hidden'
+  if (!searchData) {
+    return null
+  }
 
   const errorMessages = details && details.map((detail) => {
     return detail.error_messages
@@ -36,7 +38,7 @@ export function SideModal({ modalSM }) {
   const anotherTests = errorMessages && errorMessages.length > 5 ? `Another ${errorMessages.length - 5} errors messages was found.` : null
 
   return (
-    <div className={`fixed top-0 right-0 bg-white min-w-[480px] w-[50%] h-screen p-10 shadow-2xl rounded-lg border-l-2 overflow-y-scroll ${visibleClasses}`}>
+    <div className={`fixed top-0 right-0 bg-white min-w-[480px] w-[50%] h-screen p-10 shadow-2xl rounded-lg border-l-2 overflow-y-scroll`}>
       <div className="flex">
         <Header text="Test Details" />
         <button className="ml-auto relative -top-2" onClick={() => setSearchData(null)}>

@@ -40,6 +40,7 @@ export class SettingsDatabase {
   }
 
   async update(key: string, value: string) {
-    return await this.database().then((db) => db.query(`UPDATE settings SET value = ?, updated_at = ? WHERE key = ?`).run(value, new Date().toISOString(), key))
+    const parsedValue = (typeof(value) === "object") ? JSON.stringify(value) : value
+    return await this.database().then((db) => db.query(`UPDATE settings SET value = ?, updated_at = ? WHERE key = ?`).run(parsedValue, new Date().toISOString(), key))
   }
 }

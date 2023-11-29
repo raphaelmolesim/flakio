@@ -5,6 +5,8 @@ import { useEffect, useState } from "react"
 import { API } from "../../services/api"
 import { TestReportTable } from "./test_report_table"
 import { SideModal } from "./side_modal"
+import { JobsService } from "../../services/jobs_service"
+import { useLogger } from "../../hooks/use_logger"
 
 export function ReportsPage() {
   const [credential, setCredential] = useState(null)
@@ -12,11 +14,12 @@ export function ReportsPage() {
   const [tests, setTests] = useState([])
   const [modalSearchData, setModalSearchData] = useState(null)
   const [selectedJob, setSelectedJob] = useState(null)
+  const logger = useLogger("ReportPage")
 
   function loadCredential(callback) {
     const api = new API()
     api.fetchCredentials((credentials) => {
-      console.log(credentials)
+      logger.debug(credentials)
       if (credentials.length != 1)
         throw new Error('There should be only one credential.', credentials)
       setCredential(credentials[0])
@@ -26,20 +29,21 @@ export function ReportsPage() {
 
   useEffect(() => {
     loadCredential((credential, api) => {
-      console.log('Credential: ', credential)
-      api.fetchPreferredJobs((preferredJobs) => {
-        console.log('Preferred jobs: ', preferredJobs)
-        setPreferredJobs(preferredJobs)
+      const jobsService = new JobsService()
+      logger.debug('Credential: ', credential)
+      jobsService.unifiedJobs((unifiedJobs) => {
+        logger.info('Unified jobs: ', unifiedJobs)
+        setPreferredJobs(unifiedJobs)
       })
     })
   }, [])
 
   function handleClick(event, job) {
-    console.log('Click /', job, '/')
+    logger.info('Click /', job, '/')
     setSelectedJob(job)
     const api = new API()
     api.fetchTestsReport(job, (response) => {
-      console.log('Job report: ', response)
+      logger.info('Job report: ', response)
       setTests(response)
     })
   }

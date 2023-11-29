@@ -22,7 +22,16 @@ export const insertInto = (db, tableName, params) => {
   let insert = null
   try {
     const columns = [ ...Object.keys(params), 'created_at', 'updated_at' ]
-    const values = [ ...Object.values(params), now, now ] 
+    const values = [ ...Object.values(params), now, now ]
+    const parsedValues = values.map((value) => {
+      if (typeof(value) === "string")
+        return value
+      else if (typeof(value) === "object") 
+        return JSON.stringify(value)
+      else 
+        throw new Error(`Unknown type ${typeof(value)} for value ${value}`)
+    })
+    console.log("parsedValues", parsedValues, parsedValues.map((value) => typeof(value)))
     const valuePlaceholder = "?, ".repeat(values.length - 1) + "?"
     logger.debug("Inserting with ", columns, values)
     let sql = `INSERT INTO ${tableName} 
@@ -30,7 +39,7 @@ export const insertInto = (db, tableName, params) => {
       VALUES (${valuePlaceholder}) 
       RETURNING id`
     insert = db.query(sql)
-    return insert.get(...values)
+    return insert.get(...parsedValues)
   } catch (error) {
     logger.error("%O", error)
     logger.error(insert)

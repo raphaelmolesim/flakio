@@ -1,37 +1,30 @@
 import { MainContent } from '../components/main_content.js'
 import { LayoutPage } from '../components/layout_page.js'
-import { PrimaryButton, Header } from '../components/basic_elements.js'
+import { PrimaryButton, AlternativeButton, Header } from '../components/basic_elements.js'
 import { useEffect, useState } from 'react'
 import { Select } from '../components/select.js'
 import { useLogger } from '../hooks/use_logger'
 import { SettingsService } from '../services/settings_service.js'
+import { API } from '../services/api.js'
+import { RulesList } from './rules-list.js'
+import { useSettings } from '../hooks/use_settings.js'
 
 export function SettingsPage() {
   const logger = useLogger("SettingsPage");
-  [settings, setSettings] = useState({})
-  const settingsService = new SettingsService()
+  const { settings, setSettings, addBlankRule, saveSettings } = useSettings()
 
-  function saveSettings(event) {
+  function saveClick(event) {
     logger.debug("Saving settings:", settings)
-    settingsService.update(settings, (response) => logger.info("Update: ", response.status))
+    saveSettings()
   }
-
-  useEffect(() => {
-    settingsService.all((settingsDictonary) => {
-      logger.debug("Loaded settings:", settingsDictonary)
-      const defaultConfig = {
-        numberOfPagesToDownload: 50
-      }
-      setSettings({ ...defaultConfig, ...settingsDictonary })
-    })
-  }, [MainContent])
 
   function updateNumberOfPagesToDownload(e) {
     const newValue = e.target.value
-    const newSettings = { ...settings }
-    newSettings['numberOfPagesToDownload'] = newValue
-    logger.debug("Update the number of page to download: ", newSettings)
-    setSettings(newSettings)
+    setSettings('numberOfPagesToDownload', newValue)
+  }
+
+  function setRules(rules) {
+    setSettings('unificationRules', rules)
   }
 
   return (
@@ -51,7 +44,15 @@ export function SettingsPage() {
               <option value="300">300</option>
             </Select>
           </div>
-          <PrimaryButton text="Save" size="sm" onClick={saveSettings}/>
+          <div className="mb-6">
+            <label className="block mb-2 text-sm font-medium text-gray-900">
+              Unify jobs
+            </label>
+            <span className="italic text-xs font-medium text-gray-900 dark:text-gray-300 block mb-2">(You can merge jobs in the report, this is usefull when you have parrallel tests for intance)</span>
+            <AlternativeButton text="Add unification rule" onClick={addBlankRule}></AlternativeButton>
+            <RulesList rules={settings['unificationRules']} setRules={setRules} />
+          </div>
+          <PrimaryButton text="Save" size="sm" onClick={saveClick}/>
         </form>
       </MainContent>
     </LayoutPage>

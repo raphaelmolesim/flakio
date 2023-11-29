@@ -27,9 +27,25 @@ export const syncTests = async ({ testsDb, body }) => {
   }
 }
 
-export const getErrorsByMR = async ({ testsDb, params }) => {
+export const getErrorsByMR = async ({ testsDb, settingsDb, params }) => {
   const decodedJobName = decodeURI(params.jobName.replaceAll('@slash-bar', '/'))
-  const tests = await testsDb().queryTestByMR(decodedJobName)
+
+  const settings = await settingsDb().all()
+  const unificationRules = settings.find((setting) => setting.key === 'unificationRules')
+  let jobNames = null
+
+  if (unificationRules) {
+    const parsedUnificationRules = JSON.parse(unificationRules.value)
+    const rules = parsedUnificationRules.filter((rule) => rule.unifiedJob === decodedJobName)
+    if (rules.length > 0)
+      jobNames = rules.map((rule) => rule.jobs).flat()
+  }
+  
+  // if no rules were found, use the job name as is
+  if (jobNames === null)
+    jobNames = [ decodedJobName ]
+    
+  const tests = await testsDb().queryTestByMR(jobNames)
   return tests
 }
 

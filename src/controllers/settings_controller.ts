@@ -8,13 +8,21 @@ export const settingsIndex = async ({ settingsDb }) => {
     return {
       "id" : settings.id,
       "key" : settings.key,
-      "value" : settings.value,
+      "value" : safeParseValue(settings.value),
       "createdAt" : settings.created_at,
       "updatedAt" : settings.updated_at
     }
   })
   return {
     settings: tranformedSettings
+  }
+}
+
+function safeParseValue(value) {
+  try {
+    return JSON.parse(value)
+  } catch (error) {
+    return value
   }
 }
 
@@ -35,7 +43,7 @@ export const settingsBulkUpdate = async ({ settingsDb, body }) => {
   logger.info('Bulk updating settings', body.settings)
   const settings = await settingsDb().all()
   const settingsKeyAlreadyPresent = settings.map((setting) => setting.key)
-  logger.info("settingsKeyAlreadyPresent", settingsKeyAlreadyPresent)
+  logger.debug("settingsKeyAlreadyPresent", settingsKeyAlreadyPresent)
   for (const [key, value] of Object.entries(body.settings)) {  
     if (settingsKeyAlreadyPresent.includes(key))
       await settingsDb().update(key, value)

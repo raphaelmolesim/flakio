@@ -82,33 +82,42 @@ export class TestsDatabase {
       ) as Test)
   }
 
-  async queryTestByMR(jobName) {
-    console.log('[TestsDatabase] queryTestByMR for job: ', jobName)
-    return await this.database().then((db) => db.query(
-      `
-      SELECT * FROM
-      (
-        SELECT tests.line, COUNT(jobs.ref) AS MR, 
+  async queryTestByMR(jobNames) {
+    console.log('[TestsDatabase] queryTestByMR for job: ', jobNames)
+    const variables = jobNames.map((jobName, idx) => `$job_name${idx}`). join(", ")
+    const variablesWithValue = jobNames.map((jobName, idx) => {
+      const hash = {}
+      hash[`$job_name${idx}`] = jobName
+      return hash
+    }).reduce((acc, curr) => { return { ...acc, ...curr } }, {})
+    return await this.database().then((db) => {
+      const query = db.query(`
+        SELECT * FROM
         (
-          SELECT 
-            GROUP_CONCAT(
-              CASE WHEN T.line IS tests.line
-              THEN  '4' -- 4 is the error code
-              ELSE  '5' -- 5 is the success code
-              END)
-            FROM jobs AS J
-          LEFT JOIN tests as T
-          ON J.job_id == T.job_id
-          WHERE J.job_name == $job_name
-        ) AS Executions FROM tests 
-        INNER JOIN jobs 
-        ON jobs.job_id == tests.job_id 
-        WHERE jobs.job_name == $job_name
-        GROUP BY tests.line
-        ORDER BY MR DESC
-      ) WHERE MR > 1
-      `
-    ).all({ $job_name: jobName }))
+          SELECT tests.line, COUNT(jobs.ref) AS MR, 
+          (
+            SELECT 
+              GROUP_CONCAT(
+                CASE WHEN T.line IS tests.line
+                THEN  '4' -- 4 is the error code
+                ELSE  '5' -- 5 is the success code
+                END)
+              FROM jobs AS J
+            LEFT JOIN tests as T
+            ON J.job_id == T.job_id
+            WHERE J.job_name IN (${variables})
+          ) AS Executions FROM tests 
+          INNER JOIN jobs 
+          ON jobs.job_id == tests.job_id 
+          WHERE jobs.job_name IN (${variables})
+          GROUP BY tests.line
+          ORDER BY MR DESC
+        ) WHERE MR > 1
+        `)
+      const result = query.all(variablesWithValue)
+      console.log('[TestsDatabase] queryTestByMR sql', query.toString())
+      return result
+    })
   }
 
 }
