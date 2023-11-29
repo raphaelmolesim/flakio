@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { API } from '../services/api.js'
-import { PrimaryButton } from '../components/basic_elements'
+import { API } from '../../services/api.js'
+import { PrimaryButton } from '../../components/basic_elements.js'
 
 export function RulesList({rules, setRules}) {   
   [jobs, setJobs] = useState([])

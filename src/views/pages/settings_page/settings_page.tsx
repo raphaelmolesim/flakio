@@ -1,13 +1,13 @@
-import { MainContent } from '../components/main_content.js'
-import { LayoutPage } from '../components/layout_page.js'
-import { PrimaryButton, AlternativeButton, Header } from '../components/basic_elements.js'
+import { MainContent } from '../../components/main_content.js'
+import { LayoutPage } from '../../components/layout_page.js'
+import { PrimaryButton, AlternativeButton, Header } from '../../components/basic_elements.js'
 import { useEffect, useState } from 'react'
-import { Select } from '../components/select.js'
-import { useLogger } from '../hooks/use_logger'
-import { SettingsService } from '../services/settings_service.js'
-import { API } from '../services/api.js'
+import { Select } from '../../components/select.js'
+import { useLogger } from '../../hooks/use_logger.js'
+import { SettingsService } from '../../services/settings_service.js'
+import { API } from '../../services/api.js'
 import { RulesList } from './rules-list.js'
-import { useSettings } from '../hooks/use_settings.js'
+import { useSettings } from '../../hooks/use_settings.js'
 
 export function SettingsPage() {
   const logger = useLogger("SettingsPage");

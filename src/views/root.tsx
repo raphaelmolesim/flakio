@@ -5,7 +5,7 @@ import { CredentialsPage } from './pages/credentials_page'
 import { DownloadPage } from './pages/download_page/download_page'
 import { SyncPage } from './pages/sync_page/sync_page'
 import { ReportsPage } from './pages/reports_page/reports_page'
-import { SettingsPage } from './pages/settings_page'
+import { SettingsPage } from './pages/settings_page/settings_page'
 
 function App() {
 
