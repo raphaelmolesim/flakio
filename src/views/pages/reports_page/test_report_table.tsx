@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { CheckIcon, FireIcon, SafeIcon, InfoIcon } from '../../components/basic_elements';
 
 export function TestReportTable({tests, visible, modalSM, jobName}) {
   const [modalSearchData, setModalSearchData] = modalSM
@@ -64,17 +65,31 @@ export function TestReportTable({tests, visible, modalSM, jobName}) {
       const lastFailureDate = Date.parse(test["LastFailure"])
       const today = new Date()
       const daysSinceLastFailure = Math.round(Math.abs((today - lastFailureDate) / oneDay))
+      
+      let badge = null
+      if (daysSinceLastFailure == 0 ) 
+        badge = <FireIcon />
+      else if (daysSinceLastFailure > 0 && daysSinceLastFailure < 7)
+        badge = <InfoIcon />
+      else if (daysSinceLastFailure >= 7 && daysSinceLastFailure < 14)
+        badge = <CheckIcon />
+      else if (daysSinceLastFailure >= 14)
+        badge = <SafeIcon />
+
       return (
         <tr className="bg-white border-b flex" key={idx++}>
           <td scope="row" className="px-6 py-2 font-medium text-gray-900 truncate w-[45%] block">
             <a onClick={showTestDetails} data-tooltip-target={`tooltip-${idx}`} onMouseOver={showTooltip} onMouseOut={hideTooltip} className="cursor-pointer">{test["line"]}</a> 
             <Tootip text={test["line"]} id={`tooltip-${idx}`} />
           </td>
-          <td className="px-6 py-2 truncate w-[10%] block">
-            {test["MR"]}
+          <td className="px-6 py-2 truncate w-[10%] block flex">
+            {daysSinceLastFailure}
+            <div class="ml-4">
+              {badge}
+            </div>
           </td>
           <td className="px-6 py-2 truncate w-[10%] block">
-            {daysSinceLastFailure}
+            {test["MR"]}
           </td>
           <td className="px-6 py-2 flex gap-2 items-center w-[35%] block">
             {test["Executions"].split(',').slice(-18, -1).map((execution) => {
@@ -95,10 +110,10 @@ export function TestReportTable({tests, visible, modalSM, jobName}) {
                 Test Name
             </th>
             <th scope="col" className="px-6 py-3 w-[10%] block">
-                # fails cross MR
+                # days since last failure
             </th>
             <th scope="col" className="px-6 py-3 w-[10%] block">
-                # days since last failure
+                # fails cross MR
             </th>
             <th scope="col" className="px-6 py-3 w-[35%] block">
                 Executions
