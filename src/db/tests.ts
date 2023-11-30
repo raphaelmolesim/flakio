@@ -96,6 +96,15 @@ export class TestsDatabase {
         (
           SELECT tests.line, COUNT(jobs.ref) AS MR, 
           (
+            SELECT finished_at FROM tests as T
+            INNER JOIN jobs as J
+            ON T.job_id = J.job_id
+            WHERE T.line == tests.line
+            AND J.job_name IN (${variables})
+            ORDER BY J.finished_at DESC
+            LIMIT 1
+          ) AS LastFailure,
+          (
             SELECT 
               GROUP_CONCAT(
                 CASE WHEN T.line IS tests.line

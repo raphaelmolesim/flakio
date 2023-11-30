@@ -60,6 +60,10 @@ export function TestReportTable({tests, visible, modalSM, jobName}) {
     let idx = 0
     let executionIdx = 0
     return tests.map(test => {
+      const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds      
+      const lastFailureDate = Date.parse(test["LastFailure"])
+      const today = new Date()
+      const daysSinceLastFailure = Math.round(Math.abs((today - lastFailureDate) / oneDay))
       return (
         <tr className="bg-white border-b flex" key={idx++}>
           <td scope="row" className="px-6 py-2 font-medium text-gray-900 truncate w-[45%] block">
@@ -69,8 +73,11 @@ export function TestReportTable({tests, visible, modalSM, jobName}) {
           <td className="px-6 py-2 truncate w-[10%] block">
             {test["MR"]}
           </td>
-          <td className="px-6 py-2 flex gap-2 items-center w-[45%] block">
-            {test["Executions"].split(',').slice(-28, -1).map((execution) => {
+          <td className="px-6 py-2 truncate w-[10%] block">
+            {daysSinceLastFailure}
+          </td>
+          <td className="px-6 py-2 flex gap-2 items-center w-[35%] block">
+            {test["Executions"].split(',').slice(-18, -1).map((execution) => {
               return executionIcon(statusEnum[parseInt(execution)], `${idx}=>${executionIdx++}`)
             })}
           </td>
@@ -90,7 +97,10 @@ export function TestReportTable({tests, visible, modalSM, jobName}) {
             <th scope="col" className="px-6 py-3 w-[10%] block">
                 # fails cross MR
             </th>
-            <th scope="col" className="px-6 py-3 w-[45%] block">
+            <th scope="col" className="px-6 py-3 w-[10%] block">
+                # days since last failure
+            </th>
+            <th scope="col" className="px-6 py-3 w-[35%] block">
                 Executions
             </th>
           </tr>
