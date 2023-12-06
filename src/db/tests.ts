@@ -100,10 +100,17 @@ export class TestsDatabase {
             INNER JOIN jobs as J
             ON T.job_id = J.job_id
             WHERE T.line == tests.line
-            AND J.job_name IN (${variables})
             ORDER BY J.finished_at DESC
             LIMIT 1
           ) AS LastFailure,
+          (
+            SELECT job_name FROM tests as T
+            INNER JOIN jobs as J
+            ON T.job_id = J.job_id
+            WHERE T.line == tests.line
+            ORDER BY J.finished_at DESC
+            LIMIT 1
+          ) as LastJobName,
           (
             SELECT 
               GROUP_CONCAT(
@@ -118,9 +125,9 @@ export class TestsDatabase {
           ) AS Executions FROM tests 
           INNER JOIN jobs 
           ON jobs.job_id == tests.job_id 
-          WHERE jobs.job_name IN (${variables})
+          WHERE LastJobName IN (${variables})
           GROUP BY tests.line
-          ORDER BY MR DESC
+          ORDER BY LastFailure DESC
         ) WHERE MR > 1
         `)
       const result = query.all(variablesWithValue)

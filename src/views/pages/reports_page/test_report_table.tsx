@@ -84,10 +84,10 @@ export function TestReportTable({tests, visible, modalSM, jobName}) {
           </td>
           <td className="px-6 py-2 truncate w-[10%] block flex">
             {daysSinceLastFailure}
-            <div class="ml-4">
+            <div className="ml-4">
               {badge}
             </div>
-          </td>
+          </td> 
           <td className="px-6 py-2 truncate w-[10%] block">
             {test["MR"]}
           </td>

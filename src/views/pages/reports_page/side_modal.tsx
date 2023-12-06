@@ -66,7 +66,7 @@ export function SideModal({ modalSM }) {
               return (<li className="text-xs ml-5 py-2 list-disc" key={detail.job_id}>
               <a href={`https://gitlab.com/happyco/hub/-/pipelines/${detail.pipeline_id}`} target="blank">{detail.job_id}</a>
               </li>)
-            }).slice(0, 5)
+            }).reverse().slice(0, 5)
           }
         </ul>
       </div>
