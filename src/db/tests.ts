@@ -14,7 +14,12 @@ export class TestsDatabase {
   private db: Database;
 
   constructor() {
-    this.db = new Database('flakio.db', { create: true })
+    try {
+      this.db = new Database('flakio.db', { create: true })
+    } catch (error) {
+      console.log('Error opening database', error)
+      throw error
+    }
   }
 
   database() {

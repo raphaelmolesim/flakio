@@ -1,8 +1,11 @@
+import { ConsoleOutputLogger } from "./console_output_logger.js"
+
 export class GitLabService {
   constructor(projectId, apiUrl, privateToken) {
     this.projectId = projectId;
     this.apiUrl = apiUrl;
     this.privateToken = privateToken;
+    this.logger = new ConsoleOutputLogger("info", "GitLabService")
   }
 
   public getFinishedJobs(page=0) {
@@ -14,12 +17,12 @@ export class GitLabService {
 
   public getJobTrace(jobId) {
     const url = `${this.apiUrl}/projects/${this.projectId}/jobs/${jobId}/trace?${this.querStringPrivateToken()}`
-    console.log('[GitLabService] Fetching job trace', url)
+    this.logger.debug('Fetching job trace', url)
     return this.fetchWithTimeout(url).then((response) => {
-      console.log('[GitLabService] Fetched job trace', response)
+      this.logger.debug('Fetched job trace', response)
       return response.text()
     }).catch((error) => {
-      console.error('[GitLabService] Error fetching job trace', error.toString())
+      console.error('Error fetching job trace', error.toString())
       return this.requestWithWget(url)
     })
   }
@@ -27,10 +30,10 @@ export class GitLabService {
   public getJob(jobId) {
     const url = `${this.apiUrl}/projects/${this.projectId}/jobs/${jobId}?${this.querStringPrivateToken()}`
     return this.fetchWithTimeout(url).then((response) => {
-      console.log('[GitLabService] Fetching job data', jobId)
+      this.logger.debug('Fetching job data', jobId)
       return response.json()
     }).catch((error) => {
-      console.error('[GitLabService] Error fetching job data', error.toString())
+      console.error('Error fetching job data', error.toString())
       return this.requestWithWget(url)
     })
   }
@@ -40,7 +43,7 @@ export class GitLabService {
     return this.fetchWithTimeout(url).then((response) => {
       return response.json()
     }).catch((error) => {
-      console.error('[GitLabService] Error fetching pipeline data', error.toString())
+      console.error('Error fetching pipeline data', error.toString())
       return this.requestWithWget(url)
     })
   }
@@ -50,7 +53,7 @@ export class GitLabService {
     return this.fetchWithTimeout(url).then((response) => {
       return response.json()
     }).catch((error) => {
-      console.error('[GitLabService] Error fetching user data', error.toString())
+      console.error('Error fetching user data', error.toString())
       return this.requestWithWget(url)
     })
   }
@@ -64,7 +67,7 @@ export class GitLabService {
     return this.fetchWithTimeout(url).then((response) => {
       return response.json()
     }).catch((error) => {
-      console.error('[GitLabService] Error fetching user data', error.toString())
+      console.error('Error fetching user data', error.toString())
       return this.requestWithWget(url)
     })
   }
@@ -75,11 +78,11 @@ export class GitLabService {
   }
 
   private async requestWithWget(url){
-    console.log('[GitLabService] Fetching job trace with wget', url)
+    this.logger.debug('Fetching job trace with wget', url)
     var cmd = `wget -O tmp/trace.log ${url}`
     var child = require('child_process').execSync(cmd)
     const file = await Bun.file('tmp/trace.log').text()
-    console.log('[GitLabService] Fetched job trace with wget')
+    this.logger.debug('Fetched job trace with wget')
     return file
   }
 

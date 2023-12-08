@@ -1,12 +1,16 @@
 import { GitLabService } from '../gitlab_service.ts'
+import { ConsoleOutputLogger } from '../console_output_logger.js'
+
+const logger = new ConsoleOutputLogger("info", "JobsController")
 
 export const syncJobs = async ({ jobsDb, body }) => {
   const newItems = []
-  console.log('[JobsController] Syncing jobs')
+  logger.debug('Syncing jobs')
   const promises = body.jobs.map(async (job) => {
     const existentJob = await jobsDb().find(job.jobId)
     if (existentJob != null) {
-      console.log('[JobsController] Job already exists', existentJob)
+      logger.info('Job already exists')
+      logger.debug('Job', existentJob)
       return null
     } else {
       const id = await jobsDb().create({
@@ -23,7 +27,7 @@ export const syncJobs = async ({ jobsDb, body }) => {
         queue_duration: job.queueDuration,
         coverage: job.coverage
       })
-      console.log('[JobsController] Synced job', id)
+      console.info('Synced job', id)
       newItems.push(id.id)
       return id.id
     }
@@ -36,13 +40,13 @@ export const syncJobs = async ({ jobsDb, body }) => {
 }
 
 export const updateTestRunData = async ({ jobsDb, body }) => {  
-  console.log('[JobsController] Updating Test Run Data in jobs')
+  logger.debug('Updating Test Run Data in jobs')
   const promises = body.jobs.map(async (job) => {
     const existentJob = await jobsDb().find(job.jobId)
     if (existentJob != null) {
-      console.log('[JobsController] Found Job', existentJob)
+      logger.debug('Found Job:', existentJob)
       const id = await jobsDb().updateTestRunData(job.jobId, job.overallStatus, job.seed)
-      console.log('[JobsController] Updated Job', id)
+      logger.info('Updated Job', id)
     } else {
       throw new Error('Job not found with id: ' + job.jobId)
     }
@@ -54,9 +58,9 @@ export const updateTestRunData = async ({ jobsDb, body }) => {
 }
 
 export const getPreferredJobs = async ({ jobsDb }) => {
-  console.log('[JobsController] Fetching preferred jobs')
+  logger.debug('Fetching preferred jobs')
   const jobs = await jobsDb().all()
-  //console.log('[JobsController] Found jobs', jobs)
+  //logger.debug('Found jobs', jobs)
   //const groupedByName = Object.groupBy(jobs, (job) => job.name)
   const groupedByName = jobs.reduce((hash, job) => {
     hash[job.job_name] = hash[job.job_name] || []
@@ -64,12 +68,12 @@ export const getPreferredJobs = async ({ jobsDb }) => {
     return hash
   }, {})
   const preferredJobs = Object.keys(groupedByName)
-  console.log('[JobsController] Found preferred jobs', preferredJobs)
+  logger.debug('Found preferred jobs', preferredJobs)
   return preferredJobs
 }
 
 export const getLastImportData = async ({ jobsDb }) => {
-  console.log('[JobsController] Fetching preferred jobs')
+  logger.debug('Fetching last import data')
   const jobs = await jobsDb().all()
   const lastJob = jobs.reduce((candidate, job) => {
     const jobDate = new Date(job.finished_at)
@@ -87,7 +91,7 @@ export const getLastImportData = async ({ jobsDb }) => {
 
 export const getGitLabJobs = (ctx) => {
   const { projectId, apiUrl, privateToken, page } = ctx.query
-  console.log('[JobsController] Fetching jobs with credentials: ', projectId, apiUrl, privateToken)
+  logger.info('Fetching jobs, page:', page)
   const gitlabService = new GitLabService(projectId, apiUrl, privateToken)
   return gitlabService.getFinishedJobs(page);
 }
@@ -99,13 +103,13 @@ export const getGitLabFailedTests = async (ctx) => {
   const logTrace = await gitlabService.getJobTrace(id);
   
   // Debugging purposes only
-  // console.log(`[JobsController] log trace`, logTrace, id)
+  // logger.debug(`log trace`, logTrace, id)
   
   const matches = getTextBetween(logTrace, 'Failed examples:', 'Randomized with seed') 
-  console.log(`[JobsController] Found ${matches.length} Matches`)
+  logger.debug(`Found ${matches.length} Matches`)
 
   if (matches.length === 0) {
-    console.log(`[JobsController] No failed tests found`)// , logTrace)
+    logger.info(`No failed tests found`)// , logTrace)
     return {
       failedTests: [],
       seed: null,
@@ -134,7 +138,7 @@ export const getGitLabFailedTests = async (ctx) => {
   const errorMessagesCrop = getTextBetween(logTrace, 'Failures:', 'Finished in').join('\n')
 
   //if (failedTest.length === 0) {
-  //  console.log(`[JobsController] No failed tests found`, logTrace)
+  //  logger.debug(`No failed tests found`, logTrace)
   //}
 
   failedTest.map((test) => {
@@ -142,7 +146,7 @@ export const getGitLabFailedTests = async (ctx) => {
     test.errorMessages = errorMessages
   })
 
-  console.log(`[JobsController] Found ${failedTest.length} tests`)
+  logger.info(`Found ${failedTest.length} tests`)
 
   return {
     failedTests: failedTest,
@@ -187,7 +191,7 @@ function getErrorMessage(str, testName) {
 
   lines.forEach((line) => {
     if (line.includes(testName)) {
-      console.log(line, '=>', testName)
+      logger.debug(line, '=>', testName)
       selectLine = true
     }
 

@@ -1,6 +1,7 @@
 
 import { Database } from 'bun:sqlite'
 import { findOrCreateTable } from './data_mapper'
+import { ConsoleOutputLogger } from '../console_output_logger' 
 
 const statusEnum = {
   created: 1, 
@@ -35,6 +36,7 @@ export class JobsDatabase {
 
   constructor() {
     this.db = new Database('flakio.db', { create: true })
+    this.logger = new ConsoleOutputLogger("info", "JobsDatabase")
   }
 
   database() {
@@ -53,7 +55,7 @@ export class JobsDatabase {
   }
 
   async create(job: Job) {
-    console.log('🦊 Creating job', job)
+    this.logger.debug('Creating job', job)
     const status = statusEnum[job.status]
     if (status == undefined) throw new Error(`Status ${job.status} is not valid`)
 
@@ -89,7 +91,7 @@ export class JobsDatabase {
   }
 
   async updateTestRunData(jobId, overallStatus, seed) {
-    console.log('🦊 Updating job', jobId, overallStatus, seed)
+    this.logger.debug('Updating job', jobId, overallStatus, seed)
     return await this.database().then((db) => db.query(`UPDATE jobs SET overall_testrun_status = ?, seed = ? WHERE job_id = ?`)
       .run(overallStatus, seed, jobId))
   }
