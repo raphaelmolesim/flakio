@@ -1,4 +1,4 @@
--- Frequency of numberOffailures per job
+-- Frequency of numberOfFailures per job
 SELECT 
   job_name,
   CAST(

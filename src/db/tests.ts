@@ -29,7 +29,7 @@ export class TestsDatabase {
 
   async find(jobId: number, line: string) {
     return await this.database().then((db) => {
-      return db.query('SELECT * FROM tests WHERE job_id = $job_id AND line = $line')
+      return db.query('SELECT * FROM tests WHERE job_id == $job_id AND line == $line')
       .all({ $job_id: jobId, $line: line }).map((test) => {
         return {
           id: test.id,
@@ -46,11 +46,12 @@ export class TestsDatabase {
     console.log("[TestsDatabase] #all_by_line PARAMS [", line, '/' ,jobName, ']')
     return await this.database().then((db) => {
       const query = db.query(`
-        SELECT tests.*, jobs.pipeline_id FROM tests 
+        SELECT tests.*, jobs.pipeline_id, jobs.overall_testrun_status, jobs.finished_at FROM tests 
         INNER JOIN jobs 
         ON jobs.job_id == tests.job_id 
         WHERE tests.line == $line
         AND jobs.job_name == $jobName
+        ORDER BY jobs.finished_at DESC
       `)
       const results = query.all({ $line: line, $jobName: jobName })
       console.log('[TestsDatabase] #all_by_line sql => ', query.toString())
@@ -61,7 +62,9 @@ export class TestsDatabase {
           name: test.name,
           error_messages: JSON.parse(test.error_messages_array),
           job_id: test.job_id,
-          pipeline_id: test.pipeline_id
+          pipeline_id: test.pipeline_id,
+          overall_testrun_status: test.overall_testrun_status,
+          finished_at: test.finished_at
         }
       })
     })

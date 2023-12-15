@@ -1,6 +1,7 @@
 import { Header } from "../../components/basic_elements"
 import { useState, useEffect } from "react"
 import { API } from "../../services/api"
+import { timeAgo } from "../../../utils.js"
 
 export function SideModal({ modalSM }) {
   const [searchData, setSearchData] = modalSM
@@ -64,9 +65,11 @@ export function SideModal({ modalSM }) {
           {
             details && details.map((detail) => {
               return (<li className="text-xs ml-5 py-2 list-disc" key={detail.job_id}>
+              
               <a href={`https://gitlab.com/happyco/hub/-/pipelines/${detail.pipeline_id}`} target="blank">{detail.job_id}</a>
+               / Overall Status: ( {detail.overall_testrun_status} ) - {timeAgo(new Date(detail.finished_at))} 
               </li>)
-            }).reverse().slice(0, 5)
+            }).slice(0, 5)
           }
         </ul>
       </div>
