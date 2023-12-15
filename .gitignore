@@ -53,3 +53,7 @@ yarn-error.log*
 **/*.log
 package-lock.json
 **/*.bun
+
+# journal files
+*-shm
+*-wal
