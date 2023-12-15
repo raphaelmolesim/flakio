@@ -22,17 +22,21 @@ import {
 } from './controllers/jobs_controller.js'
 import { syncTests, getErrorsByMR, getTestDetails } from './controllers/tests_controller.js'
 import { settingsIndex, settingsCreate, settingsUpdate, settingsBulkUpdate } from "./controllers/settings_controller.js"
+import Database from "bun:sqlite";
+import { initializeDatabase } from "./db/data_mapper.js";
 
-new CredentialsDatabase().database()
-new JobsDatabase().database()
-new TestsDatabase().database()
-new SettingsDatabase().database()
+const dbCredentials = new Database('credentials.db', { create: true })
+const dbFlakio = new Database('flakio.db', { create: true })
+const credentialsDb = initializeDatabase(new CredentialsDatabase(dbCredentials))
+const jobsDb = initializeDatabase(new JobsDatabase(dbFlakio))
+const testsDb = initializeDatabase(new TestsDatabase(dbFlakio))
+const settingsDb = initializeDatabase(new SettingsDatabase(dbCredentials))
 
 const app = new Elysia()
-    .decorate("credentialsDb", () => new CredentialsDatabase())
-    .decorate("jobsDb", () => new JobsDatabase())
-    .decorate("testsDb", () => new TestsDatabase())
-    .decorate("settingsDb", () => new SettingsDatabase())
+    .decorate("credentialsDb", () => credentialsDb)
+    .decorate("jobsDb", () => jobsDb)
+    .decorate("testsDb", () => testsDb)
+    .decorate("settingsDb", () => settingsDb)
     .use(html())
     .use(staticPlugin({
       assets : "./dist"

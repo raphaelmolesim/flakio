@@ -9,7 +9,7 @@ export const findOrCreateTable = async (db, tableName) => {
     logger.debug(`table ${tableName} exists`)
   } else {
     logger.debug(`table ${tableName} does not exists`)
-    let schema = await Bun.file(`./src/db/${tableName}.schema`).text()
+    let schema = await Bun.file(`./src/db/${tableName}.schema`).text()    
     logger.debug(`creating table ${tableName}:\n`, schema)
     const query = db.query(schema)
     const result = query.run()
@@ -45,4 +45,10 @@ export const insertInto = (db, tableName, params) => {
     logger.error(insert)
     throw error
   }
+}
+
+export const initializeDatabase = (db) => {  
+  db.database().then((database) => { database.exec("PRAGMA journal_mode = WAL;"); })
+  logger.debug("Initialized database", db)
+  return db
 }

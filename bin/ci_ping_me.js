@@ -5,23 +5,26 @@ import { CredentialsDatabase } from "../src/db/credentials.js"
 import { ConsoleOutputLogger } from "../src/console_output_logger.js"
 import { isNullOrUndefined } from "util";
 import { pipeline } from "stream";
+import Database from "bun:sqlite";
 
 const { exec, spawn } = require('child_process');
-const logger = new ConsoleOutputLogger()
+const logger = new ConsoleOutputLogger("info", "CI Ping Me")
 
-new CredentialsDatabase().all().then(async function(credentials) { 
+const dbCredentials = new Database('credentials.db', { create: true })
+
+new CredentialsDatabase(dbCredentials).all().then(async function(credentials) { 
   const credential = credentials[0]
   const gitlabService = new GitLabService(credential.project_id, credential.api_url, credential.private_token)
   
   let id = null
-  logger.debug("[Ci Ping Me] Arguments:", process.argv)
+  logger.debug("Arguments:", process.argv)
   let fetcher = (id) => gitlabService.getPipeline(id)  
 
   if (process.argv.length === 2) {
     const userData = await gitlabService.getUser()
     const pipelines = await gitlabService.getPipelines("running", userData.username)
 
-    logger.debug("[Ci Ping Me] Pipelines found:", pipelines)
+    logger.debug("Pipelines found:", pipelines)
     if (pipelines.length > 1) {
       logger.error('Too many pipelines running, it is not possible which one to track, please provide pipeline id')
       process.exit(1)
@@ -54,7 +57,7 @@ new CredentialsDatabase().all().then(async function(credentials) {
   }
 
   let status = 'starting'
-  logger.info("==> CI monitoring:", id)
+  logger.info("CI monitoring:", id)
   
   while (status === "running" || status === "starting" || status === "pending") {
     if (status != 'starting')

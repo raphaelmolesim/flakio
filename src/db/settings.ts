@@ -12,8 +12,8 @@ export interface Settings {
 export class SettingsDatabase {
   private db: Database;
 
-  constructor() {
-    this.db = new Database('credentials.db', { create: true })
+  constructor(db: Database) {
+    this.db = db
   }
 
   database() {

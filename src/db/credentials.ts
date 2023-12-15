@@ -11,8 +11,8 @@ export interface Crendetials {
 export class CredentialsDatabase {
   private db: Database;
 
-  constructor() {
-    this.db = new Database('credentials.db', { create: true })
+  constructor(db: Database) {
+    this.db = db
   }
 
   database() {

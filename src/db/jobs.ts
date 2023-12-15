@@ -34,8 +34,8 @@ export interface Job {
 export class JobsDatabase {
   private db: Database;
 
-  constructor() {
-    this.db = new Database('flakio.db', { create: true })
+  constructor(db: Database) {
+    this.db = db
     this.logger = new ConsoleOutputLogger("info", "JobsDatabase")
   }
 

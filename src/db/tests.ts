@@ -10,16 +10,13 @@ export interface Test {
   job_id: number;
 }
 
+
+
 export class TestsDatabase {
   private db: Database;
 
-  constructor() {
-    try {
-      this.db = new Database('flakio.db', { create: true })
-    } catch (error) {
-      console.log('Error opening database', error)
-      throw error
-    }
+  constructor(db: Database) {
+    this.db = db
   }
 
   database() {
@@ -71,7 +68,7 @@ export class TestsDatabase {
   }
 
   async create(test: Test) {
-    console.log('🦊 Creating test', test)
+    //console.log('🦊 Creating test', test)
     return await this.database().then((db) => db.query(`INSERT INTO tests 
       (
         line,
