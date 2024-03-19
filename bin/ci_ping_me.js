@@ -12,13 +12,13 @@ const logger = new ConsoleOutputLogger("info", "CI Ping Me")
 
 const dbCredentials = new Database('credentials.db', { create: true })
 
-new CredentialsDatabase(dbCredentials).all().then(async function(credentials) { 
+new CredentialsDatabase(dbCredentials).all().then(async function (credentials) {
   const credential = credentials[0]
   const gitlabService = new GitLabService(credential.project_id, credential.api_url, credential.private_token)
-  
+
   let id = null
   logger.debug("Arguments:", process.argv)
-  let fetcher = (id) => gitlabService.getPipeline(id)  
+  let fetcher = (id) => gitlabService.getPipeline(id)
 
   if (process.argv.length === 2) {
     const userData = await gitlabService.getUser()
@@ -50,7 +50,7 @@ new CredentialsDatabase(dbCredentials).all().then(async function(credentials) {
     } else
       id = process.argv[2]
   }
-  
+
   if (isNullOrUndefined(id)) {
     logger.error('Expected at least one argument!')
     process.exit(1)
@@ -58,23 +58,24 @@ new CredentialsDatabase(dbCredentials).all().then(async function(credentials) {
 
   let status = 'starting'
   logger.info("CI monitoring:", id)
-  
   while (status === "running" || status === "starting" || status === "pending") {
+    logger.debug("Fetching pipeline data... ", status)
     if (status != 'starting')
       await Bun.sleep(20 * 1000)
     const pipelineData = await fetcher(id)
     status = pipelineData["status"]
     logger.inline('.')
+    logger.debug("Pipeline status:", pipelineData)
   }
 
   logger.info("\n==> Done!")
   playAudioNotification()
 })
 
-const playAudioNotification = function(audioId = null) {
+const playAudioNotification = function (audioId = null) {
   const player = require('play-sound')({})
   const defaultedId = audioId || Bun.env.NOTIFICATION_SOUND_ID || 1
-  player.play(`audio/notification-v${defaultedId}.mp3`, function(err){
+  player.play(`audio/notification-v${defaultedId}.mp3`, function (err) {
     if (err) throw err
   })
 }

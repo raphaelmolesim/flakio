@@ -10,6 +10,15 @@ export interface Test {
   job_id: number;
 }
 
+function parseToSqlVariables(params: List<string>) {
+  const variables = params.map((p, idx) => `$variable${idx}`). join(", ")
+  const variablesWithValue = params.map((p, idx) => {
+    const hash = {}
+    hash[`$variable${idx}`] = p
+    return hash
+  }).reduce((acc, curr) => { return { ...acc, ...curr } }, {})
+  return { variables, variablesWithValue }
+}
 
 
 export class TestsDatabase {
@@ -42,18 +51,19 @@ export class TestsDatabase {
     })
   }
 
-  async all(line: string, jobName: string) {
-    console.log("[TestsDatabase] #all_by_line PARAMS [", line, '/' ,jobName, ']')
+  async all(line: string, jobNames: Array<string>) {
+    console.log("[TestsDatabase] #all_by_line PARAMS [", line, '/' , jobNames, ']')
+    const sqlVariables = parseToSqlVariables(jobNames)
     return await this.database().then((db) => {
       const query = db.query(`
-        SELECT tests.*, jobs.pipeline_id, jobs.overall_testrun_status, jobs.finished_at FROM tests 
+        SELECT tests.*, jobs.pipeline_id, jobs.overall_testrun_status, jobs.finished_at, jobs.ref FROM tests 
         INNER JOIN jobs 
         ON jobs.job_id == tests.job_id 
         WHERE tests.line == $line
-        AND jobs.job_name == $jobName
+        AND jobs.job_name IN (${sqlVariables.variables})
         ORDER BY jobs.finished_at DESC
       `)
-      const results = query.all({ $line: line, $jobName: jobName })
+      const results = query.all({ $line: line, ...sqlVariables.variablesWithValue })
       console.log('[TestsDatabase] #all_by_line sql => ', query.toString())
       return results.map((test) => {
         return {
@@ -64,7 +74,8 @@ export class TestsDatabase {
           job_id: test.job_id,
           pipeline_id: test.pipeline_id,
           overall_testrun_status: test.overall_testrun_status,
-          finished_at: test.finished_at
+          finished_at: test.finished_at,
+          mr: test.ref
         }
       })
     })

@@ -31,8 +31,19 @@ export const syncTests = async ({ testsDb, body }) => {
 }
 
 export const getErrorsByMR = async ({ testsDb, settingsDb, params }) => {
-  const decodedJobName = decodeURI(params.jobName.replaceAll('@slash-bar', '/'))
+  const jobNames = await getUnifiedJobNames(settingsDb, params.jobName)
+  const tests = await testsDb().queryTestByMR(jobNames)
+  return tests
+}
 
+export const getTestDetails = async ({ testsDb, settingsDb, query }) => {
+  logger.debug('#getTestDetails QUERY STRING', query)
+  const jobNames = await getUnifiedJobNames(settingsDb, query.jobName)
+  return await testsDb().all(query.testLine, jobNames)
+}
+
+async function getUnifiedJobNames(settingsDb, jobName) {
+  const decodedJobName = decodeURI(jobName.replaceAll('@slash-bar', '/'))
   const settings = await settingsDb().all()
   const unificationRules = settings.find((setting) => setting.key === 'unificationRules')
   let jobNames = null
@@ -47,12 +58,6 @@ export const getErrorsByMR = async ({ testsDb, settingsDb, params }) => {
   // if no rules were found, use the job name as is
   if (jobNames === null)
     jobNames = [ decodedJobName ]
-    
-  const tests = await testsDb().queryTestByMR(jobNames)
-  return tests
-}
 
-export const getTestDetails = async ({ testsDb, query }) => {
-  logger.debug('#getTestDetails QUERY STRING', query)
-  return await testsDb().all(query.testLine, query.jobName)
+  return jobNames
 }
