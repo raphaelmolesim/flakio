@@ -14,7 +14,7 @@ export function SideModal({ modalSM }) {
     } else {
       const [testLine, jobName] = searchData
       const api = new API()
-      api.fetchTestDetails(testLine, jobName, (response) => {
+      api.fetchTestDetails(testLine, (response) => {
         console.debug('[SideModal] Job report: ', response)
         setDetails(response)
       })
@@ -29,11 +29,11 @@ export function SideModal({ modalSM }) {
     return null
   }
 
-  const errorMessages = details && details.map((detail) => {
-    return detail.error_messages
-  }).flat().map((error, idx) => {
+  const errorMessages = details && details.flat().map((detail, idx) => {
+    const error = detail.error_messages.join("\n")
     return <li className="text-xs ml-5 py-2 list-disc" key={idx}>
               {error.substring(0, 500).split('\n').map((line, idx) => <p key={idx}>{line}</p>)}
+              <span class="p-1 text-xs text-white bg-red-600 inline-block my-1 rounded">{detail.job_name}</span>
             </li>
   })
   const anotherTests = errorMessages && errorMessages.length > 5 ? `Another ${errorMessages.length - 5} errors messages was found.` : null

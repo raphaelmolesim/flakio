@@ -121,10 +121,9 @@ export class API {
     })
   }
 
-  async fetchTestDetails(testLine, jobName, callback) {
+  async fetchTestDetails(testLine, callback) {
     return fetch('/tests/details?' + new URLSearchParams({
-      testLine: testLine,
-      jobName: jobName
+      testLine: testLine
     })).then((response) => {
       response.json().then((json) => {
         callback(json)

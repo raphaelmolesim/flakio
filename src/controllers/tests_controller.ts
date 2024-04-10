@@ -38,8 +38,7 @@ export const getErrorsByMR = async ({ testsDb, settingsDb, params }) => {
 
 export const getTestDetails = async ({ testsDb, settingsDb, query }) => {
   logger.debug('#getTestDetails QUERY STRING', query)
-  const jobNames = await getUnifiedJobNames(settingsDb, query.jobName)
-  return await testsDb().all(query.testLine, jobNames)
+  return await testsDb().all(query.testLine)
 }
 
 async function getUnifiedJobNames(settingsDb, jobName) {

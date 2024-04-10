@@ -51,19 +51,17 @@ export class TestsDatabase {
     })
   }
 
-  async all(line: string, jobNames: Array<string>) {
-    console.log("[TestsDatabase] #all_by_line PARAMS [", line, '/' , jobNames, ']')
-    const sqlVariables = parseToSqlVariables(jobNames)
+  async all(line: string) {
+    console.log("[TestsDatabase] #all_by_line PARAMS [", line, ']')
     return await this.database().then((db) => {
       const query = db.query(`
-        SELECT tests.*, jobs.pipeline_id, jobs.overall_testrun_status, jobs.finished_at, jobs.ref, jobs.pipeline_url FROM tests 
+        SELECT tests.*, jobs.pipeline_id, jobs.overall_testrun_status, jobs.finished_at, jobs.ref, jobs.pipeline_url, jobs.job_name FROM tests 
         INNER JOIN jobs 
         ON jobs.job_id == tests.job_id 
         WHERE tests.line == $line
-        AND jobs.job_name IN (${sqlVariables.variables})
         ORDER BY jobs.finished_at DESC
       `)
-      const results = query.all({ $line: line, ...sqlVariables.variablesWithValue })
+      const results = query.all({ $line: line })
       console.log('[TestsDatabase] #all_by_line sql => ', query.toString())
       return results.map((test) => {
         return {
@@ -76,7 +74,8 @@ export class TestsDatabase {
           overall_testrun_status: test.overall_testrun_status,
           finished_at: test.finished_at,
           mr: test.ref,
-          pipeline_url: test.pipeline_url
+          pipeline_url: test.pipeline_url,
+          job_name: test.job_name
         }
       })
     })
