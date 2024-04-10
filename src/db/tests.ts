@@ -56,7 +56,7 @@ export class TestsDatabase {
     const sqlVariables = parseToSqlVariables(jobNames)
     return await this.database().then((db) => {
       const query = db.query(`
-        SELECT tests.*, jobs.pipeline_id, jobs.overall_testrun_status, jobs.finished_at, jobs.ref FROM tests 
+        SELECT tests.*, jobs.pipeline_id, jobs.overall_testrun_status, jobs.finished_at, jobs.ref, jobs.pipeline_url FROM tests 
         INNER JOIN jobs 
         ON jobs.job_id == tests.job_id 
         WHERE tests.line == $line
@@ -75,7 +75,8 @@ export class TestsDatabase {
           pipeline_id: test.pipeline_id,
           overall_testrun_status: test.overall_testrun_status,
           finished_at: test.finished_at,
-          mr: test.ref
+          mr: test.ref,
+          pipeline_url: test.pipeline_url
         }
       })
     })
