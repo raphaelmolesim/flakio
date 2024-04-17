@@ -21,9 +21,11 @@ import {
   getLastImportData
 } from './controllers/jobs_controller.js'
 import { syncTests, getErrorsByMR, getTestDetails } from './controllers/tests_controller.js'
+import { getNumberOfTestPerJob } from './controllers/overview_controller.js'
 import { settingsIndex, settingsCreate, settingsUpdate, settingsBulkUpdate } from "./controllers/settings_controller.js"
 import Database from "bun:sqlite";
 import { initializeDatabase } from "./db/data_mapper.js";
+import { OverviewQueryDatabase } from "./db/overview_queries.js";
 
 const dbCredentials = new Database('credentials.db', { create: true })
 const dbFlakio = new Database('flakio.db', { create: true })
@@ -31,12 +33,14 @@ const credentialsDb = initializeDatabase(new CredentialsDatabase(dbCredentials))
 const jobsDb = initializeDatabase(new JobsDatabase(dbFlakio))
 const testsDb = initializeDatabase(new TestsDatabase(dbFlakio))
 const settingsDb = initializeDatabase(new SettingsDatabase(dbCredentials))
+const overviewQueryDb = new OverviewQueryDatabase(dbFlakio)
 
 const app = new Elysia()
     .decorate("credentialsDb", () => credentialsDb)
     .decorate("jobsDb", () => jobsDb)
     .decorate("testsDb", () => testsDb)
     .decorate("settingsDb", () => settingsDb)
+    .decorate("overviewQueryDb", () => overviewQueryDb)
     .use(html())
     .use(staticPlugin({
       assets : "./dist"
@@ -47,6 +51,7 @@ const app = new Elysia()
     .get('/settings', () => Bun.file('./dist/home.html'))
     .get('/download', () => Bun.file('./dist/home.html'))
     .get('/reports', () => Bun.file('./dist/home.html'))
+    .get('/overview', () => Bun.file('./dist/home.html'))
     
     // API routes
     .get('/credentials', credentialsIndex)
@@ -62,6 +67,7 @@ const app = new Elysia()
     .get('/tests/:jobName', getErrorsByMR)
     .get('/tests/details', getTestDetails)
     .get('/last-import', getLastImportData)
+    .get('/overview/number_of_test_per_job', getNumberOfTestPerJob)
 
     // Settings API routes
     .get('/api/settings', settingsIndex)

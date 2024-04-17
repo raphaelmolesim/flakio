@@ -10,8 +10,10 @@
   "dependencies": {
     "@elysiajs/html": "^0.7.3",
     "@elysiajs/static": "^0.7.1",
+    "chart.js": "^4.4.2",
     "elysia": "latest",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.17.0"
   },
@@ -25,7 +27,7 @@
     "tailwindcss": "^3.3.3"
   },
   "module": "src/index.js",
-  "bin" : {
-    "ci_ping_me" : "bin/ci_ping_me.js"
-  } 
+  "bin": {
+    "ci_ping_me": "bin/ci_ping_me.js"
+  }
 }

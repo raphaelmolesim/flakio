@@ -6,6 +6,7 @@ import { DownloadPage } from './pages/download_page/download_page'
 import { SyncPage } from './pages/sync_page/sync_page'
 import { ReportsPage } from './pages/reports_page/reports_page'
 import { SettingsPage } from './pages/settings_page/settings_page'
+import { OverviewPage } from './pages/overview_page/overview_page'
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="/download" element={<DownloadPage />} />
         <Route path="/jobs/sync" element={<SyncPage />} />
         <Route path="/reports" element={<ReportsPage />} />
+        <Route path="/overview" element={ <OverviewPage /> } />
         <Route path="/settings" element={<SettingsPage />} />
       </Routes>
     </BrowserRouter>
